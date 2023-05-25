@@ -1,15 +1,36 @@
 {% load static %}
 {%include 'header.html'%}
 
-<div class="carousel-inner">
-  <div class="carousel-item active">
+<div class="container mt-5">
+  <h5 class="p-2 text-warning" style="border-bottom: 2px solid orange;">Real-time Camera Image</h5>
+  <div class="camera-container">
     <video id="video" autoplay>
       <source src="{% url 'recognition_feed' %}">
     </video>
+    <canvas id="camera-canvas" width="100%" height="auto"></canvas>
   </div>
 </div>
 
-  <div class="container-fluid bg-dark" style="height: 150px;">
-    <h4 class="text-center text-light pt-5">Emloyee Record Management System</h4>
-    <p class="text-center text-primary">&copy;Liên hệ: </p>
-  </div>
+<style>
+  .camera-container {
+    position: relative;
+  }
+
+  .capture-button-container {
+    position: relative;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100%;
+  }
+</style>
+
+
+<div class="container-fluid bg-dark" style="height: 150px;">
+  <h4 class="text-center text-light pt-5">Emloyee Record Management System</h4>
+  <p class="text-center text-primary">&copy;Liên hệ: Zatapro@gmail.com</p>
+</div>
+
+
+
