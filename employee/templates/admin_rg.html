@@ -1,0 +1,263 @@
+{% extends 'admin_base.html' %}
+
+{% block main%}
+
+{%load static%}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    integrity="sha512-dVXoQSlRHcjuFrZlIEQebObiXjLs1jpsmfh/QukJ65oIJzrkE1J2W0P9ElqVLMOdtyJzqWhVoUplOEejLw4PKA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<div class="card shadow m-5">
+    <div class="card-body">
+        <h5 class="p-2 text-warning" style="border-bottom: 2px solid orange;">Create An Account</h5>
+
+        <div class="container-fluid">
+            <form method="post" name="signupForm" id="signup-form" onsubmit="return checkpassword()">
+                {% csrf_token %}
+                <div class="form-row">
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Employee Code</label>
+                            <input type="text" name="firstname" class="form-control"
+                                placeholder="Enter Your Employee Code" pattern="[0-9]+" required>
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" name="lastname" class="form-control" placeholder="Enter Last Name"
+                                pattern="[A-Za-z]+" required>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>First name</label>
+                            <input type="text" name="empcode" class="form-control" placeholder="Enter First name"
+                                pattern="[A-Za-z]+" required>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Email ID</label>
+                            <input type="email" name="email" class="form-control" placeholder="Email ID" required>
+                        </div>
+                    </div>
+
+                </div>
+                <input type="submit" value="Submit" class="m-2 px-3 btn btn-primary"
+                    onclick="showButtons(); return checkpassword()">
+
+                <button type="button" class="btn btn-primary btn-flat" name="upload" id="upload-image-btn"
+                    style="display: none;" onclick="uploadImage()">Upload
+                    image</button>
+                <button type="button" class="btn btn-primary btn-flat" name="run_detection" id="camera-btn"
+                    style="display: none;" onclick="camera()">
+                    Camera
+                </button>
+
+
+                <style>
+                    #upload-image-btn,
+                    #camera-btn {
+                        display: none;
+                    }
+                </style>
+
+            </form>
+
+            <script>
+                let uploadClicked = false;
+                let cameraClicked = false;
+
+                function checkpassword() {
+                    if (!uploadClicked && !cameraClicked) {
+                        alert('Vui lòng chọn một trong hai nút "Upload image" hoặc "Camera" và hoàn thành chức năng.');
+                        return false;
+                    }
+
+                    if (document.singup.pwd.value != document.singup.cpwd.value) {
+                        alert('Password and Repeat Password field does not match');
+                        document.singup.cpwd.focus();
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                function showButtons() {
+                    const employeeCode = document.querySelector('input[name="firstname"]').value;
+                    const uploadButton = document.getElementById('upload-image-btn');
+                    const cameraButton = document.getElementById('camera-btn');
+
+                    if (employeeCode.trim() !== '') {
+                        uploadButton.setAttribute('data-employee-code', employeeCode);
+                        cameraButton.setAttribute('data-employee-code', employeeCode);
+
+                        uploadButton.style.display = 'inline-block';
+                        cameraButton.style.display = 'inline-block';
+                    } else {
+                        alert('Vui lòng nhập mã nhân viên.');
+                    }
+                }
+                function getCookie(name) {
+                    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+                    return cookieValue ? cookieValue.pop() : '';
+                }
+
+                // function uploadImage() {
+                //     uploadClicked = true;
+                //     const signupForm1 = document.getElementById('signup-form');
+                //     const formData = new FormData(signupForm1);
+                //     const firstname = formData.get('firstname');
+                //     saveAccount();
+                //     if (firstname.trim() !== '') {
+                //         fetch(`/create_folder/?name=${firstname}`)
+                //             .then(response => {
+                //                 if (response.ok) {
+                //                     return response.text();
+                //                 } else {
+                //                     // throw new Error('Có lỗi xảy ra!');
+                //                 }
+                //             })
+                //             .then(data => {
+                //                 document.body.innerHTML = data;
+                //                  // Gọi hàm lưu tài khoản sau khi upload ảnh thành công
+                //             })
+                //             .catch(error => {
+                //                 console.error('Lỗi:', error);
+                //                 // alert('Có lỗi xảy ra!');
+                //             });
+                //     } else {
+                //         alert('Vui lòng nhập mã nhân viên.');
+                //     }
+                // }
+                function uploadImage() {
+                    uploadClicked = true;
+                    const signupForm1 = document.getElementById('signup-form');
+                    const formData = new FormData(signupForm1);
+                    const firstname = formData.get('firstname');
+                    saveAccount();
+                    if (firstname.trim() !== '') {
+                        fetch(`/create_folder/?name=${firstname}`)
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.text();
+                                } else {
+                                    // throw new Error('Có lỗi xảy ra!');
+                                }
+                            })
+                            .then(data => {
+                                document.body.innerHTML = data;
+                                // Gọi hàm lưu tài khoản sau khi upload ảnh thành công
+
+                                // Hỏi người dùng xem có muốn thêm người mới không
+                                const confirmAddNew = confirm('Bạn có muốn thêm người mới không?');
+                                if (confirmAddNew) {
+                                    // Nếu chọn 'OK', quay lại trang http://localhost:8000/ad_registration/
+                                    window.location.href = 'http://localhost:8000/ad_registration/';
+                                } else {
+                                    // Nếu chọn 'Cancel', bắt đầu train dữ liệu
+                                    fetch('/demorecognition/train/')
+                                        .then(() => {
+                                            window.location.href = '#';
+                                        })
+                                        .catch(error => {
+                                            console.error('Lỗi trong quá trình train model:', error);
+                                        });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Lỗi:', error);
+                                // alert('Có lỗi xảy ra!');
+                            });
+                    } else {
+                        alert('Vui lòng nhập mã nhân viên.');
+                    }
+                }
+
+                function saveAccount() {
+                    const signupForm = document.getElementById('signup-form');
+                    const formData = new FormData(signupForm);
+
+                    // Lấy CSRF token từ cookie
+                    const csrftoken = getCookie('csrftoken');
+
+                    // Thêm CSRF token vào dữ liệu gửi đi
+                    formData.append('csrfmiddlewaretoken', csrftoken);
+
+                    // Gửi yêu cầu POST đến view Django
+                    fetch('/save_registration/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Xử lý dữ liệu phản hồi từ view Django
+                            if (data.error === 'no') {
+                                alert('Đăng ký thành công');
+                            } else {
+                                // alert('Có lỗi xảy ra, vui lòng thử lại...');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Lỗi:', error);
+                            alert('Có lỗi xảy ra!');
+                        });
+                }
+
+
+                function camera() {
+                    cameraClicked = true;
+                    const formData = new FormData(signupForm);
+                    const folderName = formData.get('firstname');
+                    saveAccount();
+                    if (folderName != null && folderName.trim() != "") {
+                        fetch('/demorecognition/face_detection/?name=' + folderName)
+                            .then(response => {
+                                if (response.ok) {
+                                    trainModel('/demorecognition/train/')
+                                        .then(() => {
+                                            window.location.href = '#';
+                                        })
+                                        .catch(error => {
+                                            console.error('Lỗi trong quá trình train model:', error);
+                                        });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Lỗi trong quá trình gửi yêu cầu:', error);
+                            });
+                    } else {
+                        alert('Vui lòng nhập mã nhân viên.');
+                    }
+                }
+
+            </script>
+
+        </div>
+    </div>
+</div>
+
+{% if error == "no" %}
+<script>
+    alert('Đăng ký thành công');
+    // window.location = '{% url "registration" %}';
+    document.getElementById('upload-image-btn').style.display = 'none';
+    document.getElementById('camera-btn').style.display = 'none';
+</script>
+{% endif %}
+{% if error == "yes" %}
+<script>
+    alert('Có lỗi xảy ra, vui lòng thử lại...');
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'emp_base.html' %}
+
+{% block main%}
+
+
+<div class="card shadow m-5">
+    <div class="card-body">
+
+        <a href="{% url 'edit_myeducation' %}" class="btn btn-primary float-right btn-sm">Edit Education Detail</a>
+        <h5 class="p-2 text-warning" style="border-bottom: 2px solid orange;">My Education Detail</h5>
+
+        <div class="container-fluid">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Post Graduation Course Name</th>
+                    <td>{{education.coursepg}}</td>
+                </tr>
+
+                <tr>
+                    <th>Post Graduate School/College</th>
+                    <td>{{education.shoolclgpg}}</td>
+                </tr>
+
+                <tr>
+                    <th>Year of Passing in PG</th>
+                    <td>{{education.yearofpassingpg}}</td>
+                </tr>
+
+                <tr>
+                    <th>Parcent in PG</th>
+                    <td>{{education.percentagepg}}</td>
+                </tr>
+
+
+                <tr>
+                    <th>Graduation Course Name</th>
+                    <td>{{education.coursepg}}</td>
+                </tr>
+
+                <tr>
+                    <th>Graduate School/College</th>
+                    <td>{{education.shoolclgpg}}</td>
+                </tr>
+
+                <tr>
+                    <th>Year of Passing in Graduation</th>
+                    <td>{{education.yearofpassingpg}}</td>
+                </tr>
+
+                <tr>
+                    <th>Parcent in Graduation</th>
+                    <td>{{education.percentagegra}}</td>
+                </tr>
+
+                <tr>
+                    <th>SSC Course Name</th>
+                    <td>{{education.coursepg}}</td>
+                </tr>
+
+                <tr>
+                    <th>SSC School/College</th>
+                    <td>{{education.shoolclgpg}}</td>
+                </tr>
+
+                <tr>
+                    <th>Year of Passing in SSC</th>
+                    <td>{{education.yearofpassingpg}}</td>
+                </tr>
+
+                <tr>
+                    <th>Parcent in SSC</th>
+                    <td>{{education.percentagessc}}</td>
+                </tr>
+
+                <tr>
+                    <th>HSC Course Name</th>
+                    <td>{{education.coursehsc}}</td>
+                </tr>
+
+                <tr>
+                    <th>HSC School/College</th>
+                    <td>{{education.shoolclghsc}}</td>
+                </tr>
+
+                <tr>
+                    <th>Year of Passing in HSC</th>
+                    <td>{{education.yearofpassighsc}}</td>
+                </tr>
+
+                <tr>
+                    <th>Parcent in HSC</th>
+                    <td>{{education.percentagehsc}}</td>
+                </tr>
+
+                
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

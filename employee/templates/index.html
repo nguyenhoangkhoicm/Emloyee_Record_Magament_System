@@ -1,0 +1,15 @@
+{% load static %}
+{%include 'header.html'%}
+
+<div class="carousel-inner">
+  <div class="carousel-item active">
+    <video id="video" autoplay>
+      <source src="{% url 'recognition_feed' %}">
+    </video>
+  </div>
+</div>
+
+  <div class="container-fluid bg-dark" style="height: 150px;">
+    <h4 class="text-center text-light pt-5">Emloyee Record Management System</h4>
+    <p class="text-center text-primary">&copy;Liên hệ: </p>
+  </div>

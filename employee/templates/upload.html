@@ -1,0 +1,33 @@
+<form action="/upload_images/" method="POST" enctype="multipart/form-data" class="p-3 border rounded">
+    {% csrf_token %}
+    <input type="hidden" name="folder_name" value="{{ folder_name }}">
+    <div class="row">
+        {% for i in "0123456789" %}
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="image_{{ i }}">Chọn hình ảnh {{ i }}:</label>
+                    <input type="file" id="image_{{ i }}" name="image_{{ i }}" class="form-control-file">
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Tải lên" class="btn btn-primary ">
+    </div>
+</form>
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    var formData = new FormData(this);
+    fetch(this.action, {
+        method: this.method,
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === 'Tải lên hình ảnh thành công') {
+            alert('Tải lên hình ảnh thành công');
+        }
+    });
+});
+</script>
