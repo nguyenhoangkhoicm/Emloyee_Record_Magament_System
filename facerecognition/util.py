@@ -8,16 +8,15 @@ import cv2
 import matplotlib.pyplot as plt
 from skimage import io
 import time
-from keras.models import load_model
 import os
 from . import FacialRecognition 
 from django.contrib import messages
 import subprocess
-
 import tensorflow as tf
 import numpy as np
 from . import facenet
 import os
+import threading
 import math
 import pickle
 from sklearn.svm import SVC
@@ -103,7 +102,7 @@ def face_recognition(request):
 
                 # Recognize face
                 name, prob = recognizer.recognize_face(embeddings)
-                #cv2.imwrite(currentPythonFilePath+'/static/'+name+'.jpg'.replace('\\','/'),face_img)
+                cv2.imwrite(currentPythonFilePath+'/static/'+name+'.jpg'.replace('\\','/'),face_img)
                 cv2.rectangle(imgbarcode, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
                 cv2.putText(imgbarcode, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             
@@ -127,7 +126,7 @@ def face_detection(request):
     folder_path = os.path.join('./static/data/', folder_name)
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-        messages.success(request, 'Tạo thư mục thành công')
+        # messages.success(request, 'Tạo thư mục thành công')
     cv2.namedWindow('Phat Hien Khuon Mat')
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
@@ -136,6 +135,7 @@ def face_detection(request):
     count = 0
     while True:
         if count >= 10:
+            messages.success(request, 'Có dữ liệu mới được thêm vào.')
             break
         try:
             ret, frame = cap.read()
@@ -240,6 +240,7 @@ def train_and_save_classifier(data_dir, model, classifier_filename, use_split_da
                 print('Saved classifier model to file "%s"' % classifier_filename_exp)
                 print('Training accuracy: %.3f' % train_accuracy)
 
+from datetime import datetime
 def train(request):
     currentPythonFilePath = os.getcwd().replace('\\','/')
     print('Current Python File Path: ', currentPythonFilePath)
@@ -265,6 +266,100 @@ def train(request):
 
     # Print the output of the subprocess
     print(resultClass.stdout)
+    train_datetime = datetime.now()
 
+# Định dạng ngày tháng năm theo định dạng Việt Nam (dd/mm/yyyy)
+    date_str = train_datetime.strftime("%d/%m/%Y")
+
+    # Định dạng giờ theo định dạng 24 giờ (HH:MM)
+    time_str = train_datetime.strftime("%H:%M")
+
+    # Ghi thông tin vào file
+    with open('time.txt', 'w',encoding='utf-8') as file:
+        file.write(f'Thời gian train hoàn thành vào ngày: {date_str} {time_str}\n')
     # Return a success response
     return HttpResponse('ok luon')
+class Camera_feed_identified(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        self.is_running = True
+        (self.grabbed, self.frame) = self.video.read()
+        #threading dung de chay song song voi chuong trinh chinh
+        threading.Thread(target=self.update, args=()).start()
+
+    def __del__(self):
+        self.video.release()
+        cv2.destroyAllWindows()
+
+    def stop(self):
+        self.is_running = False 
+        self.__del__()
+
+    def get_frame(self):
+        image = self.frame
+        _, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+    def update(self):
+        while self.is_running:
+            try:
+                grabbed, frame = self.video.read()                   
+                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                # Read barcodes from the image
+                barcodes, imgbarcode = barcode_reader.read_barcodes(rgb)      
+                # Detect faces in the frame
+                faces, _= detector.get_faces(rgb)
+                for face in faces:
+                    x1, y1, x2, y2 = face[:4]
+                    
+                    # Get face image
+                    face_img = rgb[int(y1):int(y2), int(x1):int(x2), :]
+                    #lưu ảnh vào thư mục static
+                    
+                    # Get face embeddings
+                    embeddings = detector.get_embeddings(face_img)
+                    
+                    # Recognize face
+                    name, prob = recognizer.recognize_face(embeddings) 
+                    #lưu name vào file data.txt
+                    # with open('data.txt', 'w',encoding='utf-8') as file:
+                    #     file.write(name)
+                    #     #close file
+                    #     file.close()
+                    
+                    if barcodes != []:           
+                        cv2.rectangle(imgbarcode, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+                        cv2.putText(imgbarcode, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+                        rgb_frame = cv2.cvtColor(imgbarcode, cv2.COLOR_BGR2RGB)
+                        
+                    else:
+                        cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+                        cv2.putText(frame, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    self.frame = rgb_frame
+                    self.grabbed = grabbed
+            except:
+                try:
+                    grabbed, frame = self.video.read()
+                    self.frame = frame
+                    self.grabbed = grabbed
+                except:
+                    pass
+
+def Gender_frame(camera):
+    while camera.is_running:
+        try:
+            frame = camera.get_frame()
+        
+            yield (b'--frame\r\n'
+                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+        except:
+            pass
+def data_feed():
+    try:
+        with open(currentPythonFilePath+'/data.txt', 'r',encoding='utf-8') as file:
+            data = file.read()
+        return data
+    except:
+        return 'Chưa có dữ liệu'

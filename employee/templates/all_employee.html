@@ -19,31 +19,70 @@
                         <th>Contact No.</th>
                         <th>Joining Date</th>
                         <th>Action</th>
-                        
-
                     </tr>
                 </thead>
 
                 <tbody>
                     {% for i in employee %}
                     <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td>{{i.emcode}}</td>
-                        <td>{{i.user.first_name}}</td>
-                        <td>{{i.user.last_name}}</td>
-                        <td>{{i.user.username}}</td>
-                        <td>{{i.contact}}</td>
-                        <td>{{i.joiningdate}}</td>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ i.emcode }}</td>
+                        <td>{{ i.user.first_name }}</td>
+                        <td>{{ i.user.last_name }}</td>
+                        <td>{{ i.user.username }}</td>
+                        <td>{{ i.contact }}</td>
+                        <td>{{ i.joiningdate }}</td>
                         <td>
-                            
-                            <a href="{% url 'delete_employee' i.pk %}" class="text-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                            <form method="post" action="{% url 'delete_employee' i.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Bạn chắc chắn muốn xóa tài khoản?')">Delete</button>
+                            </form>
                         </td>
-
                     </tr>
-
                     {% endfor %}
                 </tbody>
             </table>
+            <script>
+                function deleteEmployee(id) {
+                    // Gửi yêu cầu xóa nhân viên bằng phương thức POST
+                    fetch(`/delete_employee/${id}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // Xóa thành công, làm gì đó (ví dụ: cập nhật lại danh sách nhân viên)
+                                // ...
+                            } else {
+                                // Xóa không thành công, xử lý lỗi
+                                // ...
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Lỗi:', error);
+                            // Xử lý lỗi
+                            // ...
+                        });
+                }
+                function getCookie(name) {
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        const cookies = document.cookie.split(';');
+                        for (let i = 0; i < cookies.length; i++) {
+                            const cookie = cookies[i].trim();
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+            </script>
+
         </div>
     </div>
 </div>
