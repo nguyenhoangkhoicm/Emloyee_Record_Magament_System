@@ -45,7 +45,7 @@
   </div>
 </div>
 <button id="btn" hidden> stop</button>
-<script>
+<script type="text/javascript">
   //lấy sự kiện rời trang và load lại trang
   window.onbeforeunload = function() {
     btn.click();
@@ -53,8 +53,15 @@
 
   var btn = document.getElementById('btn');
   var img = document.getElementById('camera-image');
-  var infoContainer = document.getElementById('info-container');
-  var p = document.getElementById('p');
+
+  let url = `ws://${window.location.host}/ws/socket-server/`;
+
+  const socket = new WebSocket(url);
+
+  socket.onmessage = function(e) {
+    let data = JSON.parse(e.data);
+    console.log('Data: ',data);
+  };
   
   btn.addEventListener('click', function() {
     var xhr = new XMLHttpRequest();
@@ -80,13 +87,6 @@
     }
     return cookieValue;
   }
-  var socket = new WebSocket('ws://' + window.location.host + '/ws/example/');
-
-  socket.onmessage = function(event) {
-      var message = event.data;
-      p.innerHTML = message;
-      console.log('Received message: ' + message);
-  };
 </script>
 
 {% endblock %}
