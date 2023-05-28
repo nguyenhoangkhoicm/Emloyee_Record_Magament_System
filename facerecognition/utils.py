@@ -290,6 +290,8 @@ class Camera_feed_identified(object):
 
     def get_frame(self):
         image = self.frame
+        #chuyển về màu RGB
+        #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         _, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
 

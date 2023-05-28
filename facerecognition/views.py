@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .util import *
+from .utils import *
 from django.http import StreamingHttpResponse
 from django.shortcuts import render
 from django.http import HttpResponse

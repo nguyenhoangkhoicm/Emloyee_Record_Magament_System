@@ -18,12 +18,8 @@ from django.urls import path
 from employee.views import *
 from facerecognition.views import *
 from django.conf.urls import include
-from django.urls import re_path
-from employee.routing import websocket_urlpatterns
 
 urlpatterns = [
-
-    re_path('ws/', include(websocket_urlpatterns)),
 
     path('admin/', admin.site.urls),
     path('',index,name='index'),

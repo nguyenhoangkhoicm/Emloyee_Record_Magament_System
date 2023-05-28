@@ -10,3 +10,4 @@ class DataConsumer(WebsocketConsumer):
             'type': 'connection established',
             'message': 'connection successfully'
         }))
+        
