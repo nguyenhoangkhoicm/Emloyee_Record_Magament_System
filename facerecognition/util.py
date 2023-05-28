@@ -6,7 +6,6 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 import cv2
 import matplotlib.pyplot as plt
-from skimage import io
 import time
 import os
 from . import FacialRecognition 
@@ -48,12 +47,6 @@ def uploadFile(request):
         name = fs.save(uploaded_file.name, uploaded_file)
         context['url'] = fs.url(name)
     return context
-
-
-def imreadx(url):
-    img = io.imread(url)
-    outimg = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    return outimg
 
 
 def imshowx(img, title='B2DL'):
