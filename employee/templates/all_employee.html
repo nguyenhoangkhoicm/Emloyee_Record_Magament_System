@@ -6,7 +6,16 @@
 <div class="card shadow m-5">
     <div class="card-body">
         <h5 class="p-2 text-warning" style="border-bottom: 2px solid orange;">Employee Details</h5>
-
+        {% if messages %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+            {% if message.tags == 'success' and 'Bạn vừa xóa dữ liệu của nhân viên' in message.message %}
+            Bạn vừa xóa dữ liệu của nhân viên. Bạn cần đến trang train dữ liệu để cập nhật lại dữ liệu: <a
+                href="{% url 'ad_train' %}"> click tại đây.</a>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
         <div class="container-fluid">
             <table class="table table-bordered ta" id="example">
                 <thead class="text-light bg-danger">

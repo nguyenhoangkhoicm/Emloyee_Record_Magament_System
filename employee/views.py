@@ -4,7 +4,9 @@ from django.shortcuts import render, redirect
 from .models import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
+from django.urls import reverse
 import os
+import shutil
 from django.http import JsonResponse, HttpResponseRedirect
 
 # Create your views here.
@@ -466,20 +468,52 @@ def edit_profile(request):
             error = "yes"
     return render(request, 'edit_profile.html', locals())
 
+# def delete_employee(request, id):
+#     if not request.user.is_authenticated:
+#         return redirect('admin_login')
+
+#     employee = get_object_or_404(EmployeeDetail, pk=id)
+#     user_id = employee.user_id
+
+#     try:
+#         user = User.objects.get(id=user_id)
+#         user.delete()
+#         employee.delete()
+#         return redirect('all_employee')
+#     except User.DoesNotExist:
+#         # Xử lý lỗi khi người dùng không tồn tại
+#         # ...
+#         return redirect('all_employee')
 
 def delete_employee(request, id):
     if not request.user.is_authenticated:
         return redirect('admin_login')
 
     employee = get_object_or_404(EmployeeDetail, pk=id)
+    employee_code = employee.emcode
     user_id = employee.user_id
 
     try:
         user = User.objects.get(id=user_id)
+
+        # Xóa thư mục theo mã nhân viên tương ứng
+        folder_path = os.path.join('static', 'data', str(employee_code))
+        full_path = os.path.abspath(folder_path)
+        shutil.rmtree(full_path)
+        try:
+            folder_path = os.path.join('static', 'data_process','process', str(employee_code))
+            full_path = os.path.abspath(folder_path)
+            shutil.rmtree(full_path)
+
+            folder_path = os.path.join('static', 'data_process','raw', str(employee_code))
+            full_path = os.path.abspath(folder_path)
+            shutil.rmtree(full_path)
+        except:
+            pass
         user.delete()
         employee.delete()
+        messages.success(request, 'Bạn vừa xóa dữ liệu của nhân viên.')
         return redirect('all_employee')
     except User.DoesNotExist:
-        # Xử lý lỗi khi người dùng không tồn tại
-        # ...
+        
         return redirect('all_employee')

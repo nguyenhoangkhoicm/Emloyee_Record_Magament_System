@@ -44,33 +44,29 @@
     </div>
   </div>
 </div>
-<button id="btn" hidden> stop</button>
+
 <script type="text/javascript">
+
   //lấy sự kiện rời trang và load lại trang
   window.onbeforeunload = function() {
-    btn.click();
+    document.getElementById('camera-image').addEventListener('load', function() {
+      // thông báo đã load được ảnh
+      console.log('loaded');
+      //lưu vào message 
+      
+      var xhr = new XMLHttpRequest();
+      var csrftoken = getCookie('csrftoken'); // Retrieve the CSRF token from the cookie
+      img.src = "";
+      xhr.open('POST', "{% url 'identified' %}", true);
+      xhr.setRequestHeader('X-CSRFToken', csrftoken); // Set the CSRF token in the request header
+      xhr.send();
+    });
   };
 
   var btn = document.getElementById('btn');
   var img = document.getElementById('camera-image');
+   
 
-  let url = `ws://${window.location.host}/ws/socket-server/`;
-
-  const socket = new WebSocket(url);
-
-  socket.onmessage = function(e) {
-    let data = JSON.parse(e.data);
-    console.log('Data: ',data);
-  };
-  
-  btn.addEventListener('click', function() {
-    var xhr = new XMLHttpRequest();
-    var csrftoken = getCookie('csrftoken'); // Retrieve the CSRF token from the cookie
-    img.src = "";
-    xhr.open('POST', "{% url 'identified' %}", true);
-    xhr.setRequestHeader('X-CSRFToken', csrftoken); // Set the CSRF token in the request header
-    xhr.send();
-  });
 
   // Helper function to retrieve the CSRF token from the cookie
   function getCookie(name) {

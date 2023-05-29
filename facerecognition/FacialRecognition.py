@@ -68,24 +68,37 @@ class FaceRecognition:
         best_class_probabilities = predictions[np.arange(len(best_class_indices)), best_class_indices]
         best_name = self.class_names[best_class_indices[0]] if best_class_probabilities[0] > threshold else "unknown"
         return best_name, float(best_class_probabilities[0])
+
 class BarcodeReader:
     def __init__(self, verbose: bool = False):
         self.verbose = verbose
+
     def read_barcodes(self, frame: np.ndarray) -> List[str]:
         # draw bounding box around barcode and display barcode type and data to terminal
         decoded_objs = decode(frame)
         barcodes = []
-       
+        x_list = []
+        y_list = []
+        w_list = []
+        h_list = []
+        
         for obj in decoded_objs:
             barcodes.append(obj.data.decode('utf-8'))
+            
             # Draw bounding box around barcode
-            (x, y, w, h) = obj.rect
-            #viết chữ lên ảnh
-            cv2.putText(frame, barcodes[-1], (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            obj_x, obj_y, obj_w, obj_h = obj.rect
+            x_list.append(obj_x)
+            y_list.append(obj_y)
+            w_list.append(obj_w)
+            h_list.append(obj_h)
+            
             if self.verbose:
-                print("Barcode: ", barcodes[-1])
-        return barcodes, frame
+                print("Barcode:", barcodes[-1])
+        
+        return barcodes, x_list, y_list, w_list, h_list
+
+    
+
 def main(args):
     # Load face detector and recognizer
     detector = FaceDetector(

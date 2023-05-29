@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -84,6 +83,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'EmployeeRecordMgmt.wsgi.application'
 
+#ASGI_APPLICATION = 'EmployeeRecordMgmt.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -126,6 +126,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+SESSION_COOKIE_AGE = 3600
+
+CSRF_COOKIE_AGE = 1800
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

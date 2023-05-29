@@ -281,8 +281,14 @@ class Camera_feed_identified(object):
         threading.Thread(target=self.update, args=()).start()
 
     def __del__(self):
-        self.video.release()
-        cv2.destroyAllWindows()
+        try:
+            self.video.release()
+            cv2.destroyAllWindows()
+        except:
+            pass
+            #pass là không làm gì cả
+            #continue là bỏ qua lần lặp hiện tại và tiếp tục lần lặp kế tiếp
+            #break là thoát khỏi vòng lặp
 
     def stop(self):
         self.is_running = False 
@@ -291,18 +297,24 @@ class Camera_feed_identified(object):
     def get_frame(self):
         image = self.frame
         #chuyển về màu RGB
-        #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         _, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
 
     def update(self):
-        while self.is_running:
+        while True:
             try:
-                grabbed, frame = self.video.read()                   
+                grabbed, frame = self.video.read()              
                 rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 # Read barcodes from the image
-                barcodes, imgbarcode = barcode_reader.read_barcodes(rgb)      
+                
+                barcodes, x, y, w, h = barcode_reader.read_barcodes(rgb)
+                
+                if barcodes != []:
+                    cv2.putText(frame, barcodes[-1], (x[-1], y[-1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                    cv2.rectangle(frame, (x[-1], y[-1]), (x[-1] + w[-1], y[-1] + h[-1]), (0, 255, 0), 2)      
                 # Detect faces in the frame
+            
                 faces, _= detector.get_faces(rgb)
                 for face in faces:
                     x1, y1, x2, y2 = face[:4]
@@ -316,41 +328,40 @@ class Camera_feed_identified(object):
                     
                     # Recognize face
                     name, prob = recognizer.recognize_face(embeddings) 
-                    #lưu name vào file data.txt
-                    # with open('data.txt', 'w',encoding='utf-8') as file:
-                    #     file.write(name)
-                    #     #close file
-                    #     file.close()
-                    
-                    if barcodes != []:           
-                        cv2.rectangle(imgbarcode, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-                        cv2.putText(imgbarcode, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                    # Draw rectangle and name
+                    cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+                    cv2.putText(frame, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-                        rgb_frame = cv2.cvtColor(imgbarcode, cv2.COLOR_BGR2RGB)
-                        
-                    else:
-                        cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-                        cv2.putText(frame, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    self.frame = rgb_frame
+                    self.frame = frame
                     self.grabbed = grabbed
             except:
                 try:
                     grabbed, frame = self.video.read()
-                    self.frame = frame
+                    self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     self.grabbed = grabbed
                 except:
                     pass
+            if self.is_running == False:
+                break
 
 def Gender_frame(camera):
-    while camera.is_running:
+    while True:
         try:
             frame = camera.get_frame()
         
             yield (b'--frame\r\n'
                  b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+            
+            if camera.is_running == False:
+                break
+        except GeneratorExit:
+            
+            break
+            
         except:
             pass
+
+
 def data_feed():
     try:
         with open(currentPythonFilePath+'/data.txt', 'r',encoding='utf-8') as file:
