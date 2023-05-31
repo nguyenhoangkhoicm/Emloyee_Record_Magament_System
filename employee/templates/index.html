@@ -52,8 +52,8 @@
     document.getElementById('camera-image').addEventListener('load', function() {
       // thông báo đã load được ảnh
       console.log('loaded');
-      //lưu vào message 
-      
+      //tạm dừng 1s để load ảnh
+            
       var xhr = new XMLHttpRequest();
       var csrftoken = getCookie('csrftoken'); // Retrieve the CSRF token from the cookie
       img.src = "";
@@ -61,6 +61,7 @@
       xhr.setRequestHeader('X-CSRFToken', csrftoken); // Set the CSRF token in the request header
       xhr.send();
     });
+
   };
 
   var btn = document.getElementById('btn');
