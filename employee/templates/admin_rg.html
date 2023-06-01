@@ -7,7 +7,7 @@
 
 <div class="card shadow m-5">
     <div class="card-body">
-        <h5 class="p-2 text-warning" style="border-bottom: 2px solid orange;">Create An Account</h5>
+        <h5 class="p-2 text-warning" style="border-bottom: 2px solid orange;">Tạo tài khoản</h5>
 
         <div class="container-fluid">
             <form method="post" name="signupForm" id="signup-form" onsubmit="return checkpassword()">
@@ -16,59 +16,143 @@
 
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>Employee Code</label>
+                            <label>Mã nhân viên</label>
                             <input type="text" name="firstname" class="form-control"
                                 placeholder="Enter Your Employee Code" pattern="[0-9]+" required>
                         </div>
 
                     </div>
 
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Last Name</label>
-                            <input type="text" name="lastname" class="form-control" placeholder="Enter Last Name"
-                                pattern="[A-Za-z]+" required>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Họ và tên lót</label>
+                                <input type="text" name="lastname" class="form-control" placeholder="Enter Last Name"
+                                    pattern="[A-Za-z]+" required>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Tên</label>
+                                <input type="text" name="empcode" class="form-control" placeholder="Enter First name"
+                                    pattern="[A-Za-z]+" required>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            <label>First name</label>
-                            <input type="text" name="empcode" class="form-control" placeholder="Enter First name"
-                                pattern="[A-Za-z]+" required>
-                        </div>
-                    </div>
 
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <label>Email ID</label>
+                            <label>Email</label>
                             <input type="email" name="email" class="form-control" placeholder="Email ID" required>
                         </div>
                     </div>
 
                 </div>
-                <input type="submit" value="Submit" class="m-2 px-3 btn btn-primary"
-                    onclick="showButtons(); return checkpassword()">
 
-                <button type="button" class="btn btn-primary btn-flat" name="upload" id="upload-image-btn"
-                    style="display: none;" onclick="uploadImage()">Upload
-                    image</button>
-                <button type="button" class="btn btn-primary btn-flat" name="run_detection" id="camera-btn"
-                    style="display: none;" onclick="camera()">
-                    Camera
-                </button>
-                <button type="button" class="btn btn-primary btn-flat" name="train-btn" id="train-btn"
-                    style="display: none;" onclick="confirmTrain()">
-                    Train
-                </button>
+                <div class="button-container">
+                    <button onclick="showButtons(); return checkpassword()" class="custom-button">
+                        <div class="svg-wrapper-1">
+                            <div class="svg-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                    <path fill="none" d="M0 0h24v24H0z"></path>
+                                    <path fill="currentColor"
+                                        d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+                        <span>Đăng ký</span>
+                    </button>
+                
+                    <button type="button" class="custom-button" name="upload" id="upload-image-btn" style="display: none;" onclick="uploadImage()">
+                        <span class="folder-icon">
+                            <i class="fas fa-folder"></i>
+                        </span>
+                        Từ Folder
+                    </button>
+                
+                    <button type="button" class="custom-button" name="run_detection" id="camera-btn" style="display: none;" onclick="camera()">
+                        <span class="camera-icon">
+                            <i class="fas fa-camera"></i>
+                        </span>
+                        Từ Camera
+                    </button>
+                </div>
+                
+                <style>
+                    .custom-button {
+                        font-family: inherit;
+                        font-size: 13px;
+                        background: linear-gradient(to bottom, #4dc7d9 0%, #66a6ff 100%);
+                        color: white;
+                        padding: 0.6em 1em;
+                        /* Thu nhỏ kích thước padding */
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border: none;
+                        border-radius: 25px;
+                        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+                        transition: all 0.3s;
+                    }
+                
+                    .custom-button:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+                    }
+                
+                    .custom-button:active {
+                        transform: scale(0.95);
+                        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+                    }
+                
+                    .custom-button span {
+                        display: inline-block;
+                        vertical-align: middle;
+                    }
+
+                
+                    .custom-button svg {
+                        width: 13px;
+                        height: 13px;
+                        fill: white;
+                        transition: all 0.3s;
+                    }
+                
+                    .custom-button .svg-wrapper {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        background-color: rgba(255, 255, 255, 0.2);
+                        margin-right: 0.5em;
+                        transition: all 0.3s;
+                    }
+                
+                    .custom-button:hover .svg-wrapper {
+                        background-color: rgba(255, 255, 255, 0.5);
+                    }
+                
+                    .custom-button:hover svg {
+                        transform: rotate(45deg);
+                    }
+                
+                    .button-container {
+                        display: flex;
+                        gap: 20px;
+                        /* Khoảng cách giữa các nút */
+                        margin-top: 20px;
+                    }
+                </style>
+                
 
                 <style>
                     #upload-image-btn,
                     #camera-btn {
-                        display: none;
-                    }
-
-                    #train-btn {
                         display: none;
                     }
                 </style>
@@ -120,21 +204,9 @@
                         document.getElementById('train-btn').style.display = 'none';
                     } else {
                         // Nếu chọn 'Cancel', bắt đầu train dữ liệu
-                        train();
+
                     }
                 }
-                function train() {
-
-                    // Nếu chọn 'Cancel', bắt đầu train dữ liệu
-                    fetch('/demorecognition/train/')
-                        .then(() => {
-                            window.location.href = '#';
-                        })
-                        .catch(error => {
-                            console.error('Lỗi trong quá trình train model:', error);
-                        });
-                }
-  
 
                 function uploadImage() {
                     uploadClicked = true;
@@ -151,11 +223,11 @@
                                     // throw new Error('Có lỗi xảy ra!');
                                 }
                             })
-                            
+
                             .then(data => {
                                 document.body.innerHTML = data;
                                 // window.location.href = 'http://localhost:8000/ad_registration/';
-                        
+
                             })
 
                             .catch(error => {
@@ -189,7 +261,7 @@
                         .then(data => {
                             // Xử lý dữ liệu phản hồi từ view Django
                             if (data.error === 'no') {
-                                alert('Đăng ký tài khoản thành công');
+                                alert('Đăng ký tài khoản thành công, bạn cần tải ảnh để hoàn thiện bước đăng ký. ');
                             } else {
                                 // alert('Có lỗi xảy ra, vui lòng thử lại...');
                             }

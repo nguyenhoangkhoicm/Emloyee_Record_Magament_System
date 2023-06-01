@@ -8,6 +8,7 @@ from django.http import HttpResponse
 def demorecognition(request):
     return render(request, 'demorecognition.html', {})
 
+
 def identified(request):
     try:
         print(request.method)
@@ -28,9 +29,10 @@ def identified(request):
             if threading.active_count() > 0:
                 gen.close()
                 cam.stop()
-                
+                messages.success(request, "Dừng thành công.")
                 return HttpResponse("success")
             else:
+                messages.error(request, "Dừng không thành công.")
                 return HttpResponse("fail")
     except:
         print("lỗi rồi")

@@ -21,6 +21,9 @@ def ifter(request):
 
 
 def ad_train(request):
+    notify = request.GET.get('notify', None)
+    if notify == '1':
+        messages.success(request, 'Bạn vừa xóa tài khoản cần train dữ liệu lại.')
 
     return render(request, 'ad_train.html')
 

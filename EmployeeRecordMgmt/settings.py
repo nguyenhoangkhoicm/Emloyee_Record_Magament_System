@@ -32,20 +32,17 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    
+    'employee',
+    'facerecognition',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'employee',
-    'facerecognition',
-
+  
 ]
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -83,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'EmployeeRecordMgmt.wsgi.application'
 
-#ASGI_APPLICATION = 'EmployeeRecordMgmt.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -126,9 +122,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-SESSION_COOKIE_AGE = 3600
-
-CSRF_COOKIE_AGE = 1800
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -141,3 +135,4 @@ STATIC_URL = '/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

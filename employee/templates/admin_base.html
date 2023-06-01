@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         .list-group-item {
             padding: 8px !important;
@@ -49,51 +49,52 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-2 p-0 ">
-                <center> <img src="{% static 'images/id.jpg' %}" width="100" height="100"
-                        class="img-thumbnail rounded-circle my-3"> </center>
+            <div class="col-sm-2 p-0">
+                <center>
+                    <img src="{% static 'images/id.jpg' %}" width="100" height="100"
+                        class="img-thumbnail rounded-circle my-3">
+                </center>
 
                 <div class="list-group">
                     <a href="{% url 'admin_home' %}"
-                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/admin_home/' %} active {% endif %}">Thông
-                        tin ADMIN</a>
+                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/admin_home/' %} active {% endif %}">
+                        <i class="fa fa-tachometer-alt"></i>    Bảng điều khiển</a>
                     <a href="{% url 'all_employee' %}"
-                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/all_employee/' %} active {% endif %}">Thông
-                        tin tài khoản</a>
+                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/all_employee/' %} active {% endif %}">
+                        <i class="fa fa-users"></i>     Thông tin tài khoản</a>
                     <a href="{% url 'ad_registration' %}"
-                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/ad_registration/' %} active {% endif %}">Đăng
-                        ký tài khoản</a>
+                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/ad_registration/' %} active {% endif %}">
+                        <i class="fa fa-user-plus"></i>     Đăng ký tài khoản</a>
                     <a href="{% url 'ad_train' %}"
-                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/ad_train/' %} active {% endif %}">Train
-                        dữ liệu</a>
+                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/ad_train/' %} active {% endif %}">
+                        <i class="fa fa-database"></i>  Train dữ liệu</a>
                     <a href="{% url 'change_passwordadmin' %}"
-                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/change_password/' %} active {% endif %}">Đổi
-                        mật khẩu</a>
+                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/change_password/' %} active {% endif %}">
+                        <i class="fa fa-lock"></i>  Đổi mật khẩu</a>
                     <a href="{% url 'logout' %}"
-                        class="list-group-item list-group-item-warning list-group-item-action">Đăng xuất</a>
+                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/logout/' %} active {% endif %}">
+                        <i class="fas fa-sign-out-alt"></i>     Đăng xuất</a>
+                    
                 </div>
-
             </div>
             <div class="col-sm-10 p-0">
                 <div class="container-fluid p-2">
                     <h5 class="text-center p-3 font-weight-bold"
-                        style="border-bottom: 2px solid green; border-top: 2px solid green ;">Emloyee Record Magament
-                        System</h5>
+                        style="border-bottom: 2px solid green; border-top: 2px solid green ;">
+                        Emloyee Record Management System</h5>
 
                     <div class="card shadow" style="min-height: 90vh;">
                         <div class="card-body">
                             {% block main%}
 
-                            {% endblock%}
+                            {% endblock %}
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
 </body>
+
 
 </html>

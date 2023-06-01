@@ -4,42 +4,105 @@
 {% block content %}
 <style>
   .image-container {
-    display: inline-block;
-    position: relative;
-  }
-  
-  .bordered-image {
-    border: 2px solid #000;
-    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
     height: 100%;
+   
   }
-  
+
+  #camera-image {
+    width: 200%;
+    /* Đặt chiều rộng khung camera */
+    height: 350px;
+    /* Đặt chiều cao khung camera */
+    border: none;
+    /* Xóa đường viền khung camera */
+  }
+
+  .bordered-image {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
   .info-container {
-    display: inline-block;
-    width: 300px; /* Điều chỉnh kích thước theo nhu cầu */
+    width: 100%;
+    max-height: 300px;
     padding: 10px;
     border: 2px solid #000;
+    overflow-y: auto;
+  }
+
+  .box {
+    border: 2px solid #000;
+    margin-bottom: 20px;
+  }
+
+  .box-header {
+    background-color: #f4f4f4;
+    padding: 10px;
+  }
+
+  .box-title {
+    margin: 0;
   }
 </style>
 
-<div class="container-fluid">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+
+{% csrf_token %}
+<div class="container">
+
+
   <div class="row">
     <div class="col-md-6 col-sm-12">
-      <div class="box box-info">
-        <div class="box-header with-border">
-          <h3 class="box-title">Camera</h3>
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Camera</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
           <div class="image-container">
-            <img id="camera-image" class="bordered-image" src="{% url 'identified' %}">
+            <iframe id="camera-image" class="bordered-image" src="{% url 'identified' %}"></iframe>
           </div>
-        </div>          
+        </div>
       </div>
+      <div class="text-center mt-3">
+
+        <button id="btn" class="btn btn-danger">
+
+          <i class="fa fa-stop"></i> Stop
+        </button>
+      </div>
+
     </div>
+
+
     <div class="col-md-6 col-sm-12">
-      <div class="info-container" id="info-container">
-        <!-- Thêm nội dung văn bản ở đây -->
-        <p id="p"></p>
+      <div class="card">
+        <div class="card-body">
+          <div class="info-container" id="info-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Probability</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>John Doe</td>
+                  <td>0.85</td>
+                </tr>
+                <tr>
+                  <td>Jane Smith</td>
+                  <td>0.92</td>
+                </tr>
+                <!-- Add more rows here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -48,25 +111,89 @@
 <script type="text/javascript">
 
   //lấy sự kiện rời trang và load lại trang
-  window.onbeforeunload = function() {
-    document.getElementById('camera-image').addEventListener('load', function() {
-      // thông báo đã load được ảnh
-      console.log('loaded');
-      //tạm dừng 1s để load ảnh
-            
+  window.onbeforeunload = function () {
+    //xét thẻ với id image-camera có load được hay không
+    if (document.getElementById('camera-image').contentWindow.location != 'about:blank') {
+      //nếu có load được thì gửi yêu cầu stop
       var xhr = new XMLHttpRequest();
       var csrftoken = getCookie('csrftoken'); // Retrieve the CSRF token from the cookie
-      img.src = "";
       xhr.open('POST', "{% url 'identified' %}", true);
       xhr.setRequestHeader('X-CSRFToken', csrftoken); // Set the CSRF token in the request header
       xhr.send();
-    });
+    }
+    var xhr = new XMLHttpRequest();
+    var csrftoken = getCookie('csrftoken'); // Retrieve the CSRF token from the cookie
+    xhr.open('POST', "{% url 'identified' %}", true);
+    xhr.setRequestHeader('X-CSRFToken', csrftoken); // Set the CSRF token in the request header
+    xhr.send();
 
   };
 
-  var btn = document.getElementById('btn');
-  var img = document.getElementById('camera-image');
-   
+
+  document.getElementById('btn').addEventListener('click', function () {
+    var xhr = new XMLHttpRequest();
+    var csrftoken = getCookie('csrftoken');
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          // Xử lý khi nhận được phản hồi thành công
+          console.log(xhr.responseText);
+          showSuccessMessage();
+        } else {
+          // Xử lý khi có lỗi xảy ra
+          console.error('Có lỗi xảy ra: ' + xhr.status);
+          showErrorMessage();
+        }
+      }
+    };
+
+    xhr.open('POST', "{% url 'identified' %}", true);
+    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+    xhr.send();
+  });
+
+  // Hàm hiển thị thông báo thành công
+  function showSuccessMessage() {
+    Swal.fire({
+      icon: 'success',
+      title: 'Stop thành công',
+      showConfirmButton: false,
+      timer: 1500 // Thời gian hiển thị thông báo (miligiay)
+    });
+  }
+
+  // Hàm hiển thị thông báo lỗi
+  function showErrorMessage() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Có lỗi xảy ra',
+      text: 'Đã xảy ra lỗi trong quá trình gửi yêu cầu',
+      confirmButtonColor: '#dc3545'
+    });
+  }
+
+
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status === 200) {
+        // Xử lý khi nhận được phản hồi thành công
+        console.log(xhr.responseText);
+
+        // Hiển thị thông báo flash thành công trên trang web
+        var messagesContainer = document.querySelector('.messages');
+        // var successMessage = document.createElement('li');
+        successMessage.classList.add('success');
+        // successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Stop thành công';
+        messagesContainer.appendChild(successMessage);
+      } else {
+        // Xử lý khi có lỗi xảy ra
+        console.error('Có lỗi xảy ra: ' + xhr.status);
+      }
+    }
+  };
+
 
 
   // Helper function to retrieve the CSRF token from the cookie
