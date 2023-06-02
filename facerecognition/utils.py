@@ -150,6 +150,7 @@ def face_detection(request):
                         os.makedirs(folder_path)
 
                     image_path = os.path.join(folder_path, folder_name + str(count) + '.jpg')
+                    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     cv2.imwrite(image_path, rgb)
                     #draw bbox
                     cv2.rectangle(rgb, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
@@ -167,6 +168,7 @@ def face_detection(request):
     cv2.destroyAllWindows()
     messages.success(request, 'Tải ảnh thành công.')
     return redirect('http://localhost:8000/ad_registration/')
+    return HttpResponse('Tải ảnh thành công.')
 
 def train(request):
     currentPythonFilePath = os.getcwd().replace('\\','/')
@@ -217,18 +219,10 @@ class Camera_feed_identified(object):
         threading.Thread(target=self.update, args=()).start()
 
     def __del__(self):
-        try:
-            self.video.release()
-            cv2.destroyAllWindows()
-        except:
-            pass
-            #pass là không làm gì cả
-            #continue là bỏ qua lần lặp hiện tại và tiếp tục lần lặp kế tiếp
-            #break là thoát khỏi vòng lặp
+        self.video.release()
 
     def stop(self):
         self.is_running = False 
-        self.__del__()
 
     def get_frame(self):
         image = self.frame

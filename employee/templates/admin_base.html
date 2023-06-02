@@ -71,6 +71,9 @@
                     <a href="{% url 'change_passwordadmin' %}"
                         class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/change_password/' %} active {% endif %}">
                         <i class="fa fa-lock"></i>  Đổi mật khẩu</a>
+                        <a href="{% url '' %}"
+                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '' %} active {% endif %}">
+                        <i class="fas fa-sign-out-alt"></i>     Về Trang Chủ</a>
                     <a href="{% url 'logout' %}"
                         class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/logout/' %} active {% endif %}">
                         <i class="fas fa-sign-out-alt"></i>     Đăng xuất</a>

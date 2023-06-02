@@ -20,6 +20,7 @@ def identified(request):
                 pass
         elif request.method == 'POST':
             if threading.active_count() > 0:
+                cam.video.release()
                 cam.stop()
                 time.sleep(0.2)
                 gen.close()
