@@ -14,6 +14,7 @@ import subprocess
 import numpy as np
 import os
 import threading
+from django.shortcuts import redirect
 from datetime import datetime
 
 currentPythonFilePath = os.getcwd()
@@ -153,6 +154,7 @@ def face_detection(request):
                     #draw bbox
                     cv2.rectangle(rgb, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
                     cv2.imshow('Phat Hien Khuon Mat', rgb)
+                    
         except Exception as e:
             continue
 
@@ -163,8 +165,8 @@ def face_detection(request):
             break
     cap.release()
     cv2.destroyAllWindows()
-    return HttpResponse('ok')
-
+    messages.success(request, 'Tải ảnh thành công.')
+    return redirect('http://localhost:8000/ad_registration/')
 
 def train(request):
     currentPythonFilePath = os.getcwd().replace('\\','/')
@@ -203,6 +205,7 @@ def train(request):
     with open('time.txt', 'w',encoding='utf-8') as file:
         file.write(f'Thời gian train hoàn thành vào ngày: {date_str} {time_str}\n')
     # Return a success response
+    messages.success(request, 'Train dữ liệu thành công.')
     return HttpResponse('ok luon')
 
 class Camera_feed_identified(object):
