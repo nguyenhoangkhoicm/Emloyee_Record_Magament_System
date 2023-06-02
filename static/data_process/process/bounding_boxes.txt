@@ -1,0 +1,32 @@
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/87\flip_khoicm1.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/87\rotate_khoicm1.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010275.png 209 204 430 463
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010279.png 196 184 425 475
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010273.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010279.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010278.png 196 184 427 475
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010275.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010276.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_19050102710.png 195 184 423 477
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010271.png 196 199 428 480
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010271.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010277.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010278.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010277.png 198 185 425 474
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010272.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010272.png 194 192 424 480
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010278.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010273.png 201 201 426 470
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010275.png 197 190 422 474
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010279.png 210 195 439 467
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010273.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_19050102710.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010276.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010272.png 208 203 431 467
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010271.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010274.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_19050102710.png 208 197 433 466
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010277.png
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010276.png 195 185 425 477
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010274.png 196 188 424 479
+C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010274.png

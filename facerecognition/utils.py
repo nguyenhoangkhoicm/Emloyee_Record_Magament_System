@@ -11,15 +11,10 @@ import os
 from . import FacialRecognition 
 from django.contrib import messages
 import subprocess
-import tensorflow as tf
 import numpy as np
-from . import facenet
 import os
 import threading
-import math
-import pickle
-from sklearn.svm import SVC
-from sklearn.metrics import classification_report
+from datetime import datetime
 
 currentPythonFilePath = os.getcwd()
         
@@ -124,8 +119,8 @@ def face_detection(request):
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         return HttpResponse("Khong the mo camera")
-    time.sleep(2)
     count = 0
+    start = True
     while True:
         if count >= 10:
             messages.success(request, 'Có dữ liệu mới được thêm vào.')
@@ -135,7 +130,9 @@ def face_detection(request):
             rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # Detect faces in the frame
             faces, _ = detector.get_faces(rgb)
-
+            if start== True:
+                time.sleep(5)
+                start= False
             for face in faces:
                 faces_found= faces.shape[0]
                 if faces_found > 1:
@@ -144,15 +141,15 @@ def face_detection(request):
                 elif faces_found > 0:
                     x1, y1, x2, y2 = face[:4]
                     count += 1
-                    # Get face image
-                    face_img = rgb[int(y1):int(y2), int(x1):int(x2), :]
-
+                    # # Get face image
+                    # face_img = rgb[int(y1):int(y2), int(x1):int(x2), :]
+                    
                     folder_path = os.path.join(currentPythonFilePath, 'static', 'data', folder_name)
                     if not os.path.exists(folder_path):
                         os.makedirs(folder_path)
 
                     image_path = os.path.join(folder_path, folder_name + str(count) + '.jpg')
-                    cv2.imwrite(image_path, face_img)
+                    cv2.imwrite(image_path, rgb)
                     #draw bbox
                     cv2.rectangle(rgb, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
                     cv2.imshow('Phat Hien Khuon Mat', rgb)
@@ -168,72 +165,7 @@ def face_detection(request):
     cv2.destroyAllWindows()
     return HttpResponse('ok')
 
-def train_and_save_classifier(data_dir, model, classifier_filename, use_split_dataset=True,
-                               min_nrof_images_per_class=20, nrof_train_images_per_class=10,
-                               batch_size=90, image_size=160, seed=123, mode='TRAIN'):
-    with tf.Graph().as_default():
-        with tf.compat.v1.Session() as sess:
-            np.random.seed(seed=seed)
-            if use_split_dataset:
-                dataset_tmp = facenet.get_dataset(data_dir)
-                train_set, test_set = facenet.split_dataset(dataset_tmp, min_nrof_images_per_class,
-                                                            nrof_train_images_per_class)
-                if mode == 'TRAIN':
-                    dataset = train_set
-                elif mode == 'CLASSIFY':
-                    dataset = test_set
-            else:
-                dataset = facenet.get_dataset(data_dir)
 
-            for cls in dataset:
-                assert (len(cls.image_paths) > 0,
-                        'There must be at least one image for each class in the dataset')
-
-            paths, labels = facenet.get_image_paths_and_labels(dataset)
-
-            print('Number of classes: %d' % len(dataset))
-            print('Number of images: %d' % len(paths))
-
-            print('Loading feature extraction model')
-            facenet.load_model(model)
-
-            images_placeholder = tf.compat.v1.get_default_graph().get_tensor_by_name("input:0")
-            embeddings = tf.compat.v1.get_default_graph().get_tensor_by_name("embeddings:0")
-            phase_train_placeholder = tf.compat.v1.get_default_graph().get_tensor_by_name("phase_train:0")
-            embedding_size = embeddings.get_shape()[1]
-
-            print('Calculating features for images')
-            nrof_images = len(paths)
-            nrof_batches_per_epoch = int(math.ceil(1.0 * nrof_images / batch_size))
-            emb_array = np.zeros((nrof_images, embedding_size))
-            for i in range(nrof_batches_per_epoch):
-                start_index = i * batch_size
-                end_index = min((i + 1) * batch_size, nrof_images)
-                paths_batch = paths[start_index:end_index]
-                images = facenet.load_data(paths_batch, False, False, image_size)
-                feed_dict = {images_placeholder: images, phase_train_placeholder: False}
-                emb_array[start_index:end_index, :] = sess.run(embeddings, feed_dict=feed_dict)
-
-            classifier_filename_exp = os.path.expanduser(classifier_filename)
-
-            if mode == 'TRAIN':
-                print('Training classifier')
-                model = SVC(kernel='linear', probability=True)
-                model.fit(emb_array, labels)
-                class_names = [cls.name.replace('_', ' ') for cls in dataset]
-                train_predictions = model.predict(emb_array)
-                train_accuracy = np.mean(np.equal(train_predictions, labels))
-
-                train_report = classification_report(labels, train_predictions, target_names=class_names)
-
-                print('Training classification report:\n', train_report)
-
-                with open(classifier_filename_exp, 'wb') as outfile:
-                    pickle.dump((model, class_names), outfile)
-                print('Saved classifier model to file "%s"' % classifier_filename_exp)
-                print('Training accuracy: %.3f' % train_accuracy)
-
-from datetime import datetime
 def train(request):
     currentPythonFilePath = os.getcwd().replace('\\','/')
     print('Current Python File Path: ', currentPythonFilePath)
@@ -272,6 +204,7 @@ def train(request):
         file.write(f'Thời gian train hoàn thành vào ngày: {date_str} {time_str}\n')
     # Return a success response
     return HttpResponse('ok luon')
+
 class Camera_feed_identified(object):
     def __init__(self):
         self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
@@ -297,11 +230,11 @@ class Camera_feed_identified(object):
     def get_frame(self):
         image = self.frame
         #chuyển về màu RGB
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         _, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
 
     def update(self):
+        start = True
         while True:
             try:
                 grabbed, frame = self.video.read()              
@@ -327,7 +260,11 @@ class Camera_feed_identified(object):
                     embeddings = detector.get_embeddings(face_img)
                     
                     # Recognize face
-                    name, prob = recognizer.recognize_face(embeddings) 
+                    name, prob = recognizer.recognize_face(embeddings)
+                    if start:
+                        time.sleep(3)
+                        start = False
+                     
                     # Draw rectangle and name
                     cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
                     cv2.putText(frame, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
@@ -337,7 +274,7 @@ class Camera_feed_identified(object):
             except:
                 try:
                     grabbed, frame = self.video.read()
-                    self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    self.frame = frame
                     self.grabbed = grabbed
                 except:
                     pass
@@ -347,6 +284,7 @@ class Camera_feed_identified(object):
 def Gender_frame(camera):
     while True:
         try:
+
             frame = camera.get_frame()
         
             yield (b'--frame\r\n'

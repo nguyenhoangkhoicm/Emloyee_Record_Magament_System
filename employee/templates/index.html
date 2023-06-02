@@ -14,7 +14,7 @@
   #camera-image {
     width: 200%;
     /* Đặt chiều rộng khung camera */
-    height: 350px;
+    height: 400px;
     /* Đặt chiều cao khung camera */
     border: none;
     /* Xóa đường viền khung camera */
@@ -110,25 +110,31 @@
 
 <script type="text/javascript">
 
-  //lấy sự kiện rời trang và load lại trang
-  window.onbeforeunload = function () {
-    //xét thẻ với id image-camera có load được hay không
-    if (document.getElementById('camera-image').contentWindow.location != 'about:blank') {
-      //nếu có load được thì gửi yêu cầu stop
-      var xhr = new XMLHttpRequest();
-      var csrftoken = getCookie('csrftoken'); // Retrieve the CSRF token from the cookie
-      xhr.open('POST', "{% url 'identified' %}", true);
-      xhr.setRequestHeader('X-CSRFToken', csrftoken); // Set the CSRF token in the request header
-      xhr.send();
-    }
+  // Lắng nghe sự kiện chuyển trang
+  window.addEventListener('beforeunload', function (e) {
+    // Hủy bỏ sự kiện mặc định
+    e.preventDefault();
+
+    // Gửi yêu cầu POST đến trang /stop
     var xhr = new XMLHttpRequest();
-    var csrftoken = getCookie('csrftoken'); // Retrieve the CSRF token from the cookie
+    var csrftoken = getCookie('csrftoken');
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          // Xử lý khi nhận được phản hồi thành công
+          console.log(xhr.responseText);
+        } else {
+          // Xử lý khi có lỗi xảy ra
+          console.error('Có lỗi xảy ra: ' + xhr.status);
+        }
+      }
+    };
+
     xhr.open('POST', "{% url 'identified' %}", true);
-    xhr.setRequestHeader('X-CSRFToken', csrftoken); // Set the CSRF token in the request header
+    xhr.setRequestHeader('X-CSRFToken', csrftoken);
     xhr.send();
-
-  };
-
+  });
 
   document.getElementById('btn').addEventListener('click', function () {
     var xhr = new XMLHttpRequest();
