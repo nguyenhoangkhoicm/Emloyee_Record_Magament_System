@@ -136,7 +136,7 @@ def face_detection(request):
             for face in faces:
                 faces_found= faces.shape[0]
                 if faces_found > 1:
-                        cv2.putText(rgb, "Only one face", (0, 100), cv2.FONT_HERSHEY_COMPLEX_SMALL,
+                        cv2.putText(rgb, "Chi Mot Khuon Mat", (0, 100), cv2.FONT_HERSHEY_COMPLEX_SMALL,
                                     1, (255, 255, 255), thickness=1, lineType=2)
                 elif faces_found > 0:
                     x1, y1, x2, y2 = face[:4]

@@ -44,6 +44,7 @@ def timetrain(request):
     data = {'train_datetimes': train_datetimes}
     return JsonResponse(data)
 #hàm tạo qr code
+
 def create_qrcode(text):
     # Tạo đối tượng QR code
     qr = qrcode.QRCode(
@@ -54,15 +55,17 @@ def create_qrcode(text):
     )
 
     # Thêm dữ liệu vào QR code
-    path = os.getcwd()
     qr.add_data(text)
     qr.make(fit=True)
 
     # Tạo ảnh QR code từ đối tượng QR code
     qr_image = qr.make_image(fill_color="black", back_color="white")
 
-    # Lưu ảnh QR code thành file path + /static/images/qrcode/<text>.png
-    qr_image.save(os.path.join(path, 'static/images/qrcode', f'{text}.png'))
+    # Lưu ảnh QR code thành file tại thư mục 'static/images/qrcode'
+    save_path = os.path.join('static/images/qrcode', f'{text}.png')
+    qr_image.save(save_path)
+    
+    return save_path
 
 def create_folder(request):
     folder_name = request.GET.get('name')
@@ -149,7 +152,7 @@ def save_registration(request):
             EmployeeExperience.objects.create(user=user)
             EmployeeEducation.objects.create(user=user)
             error = "no"
-            create_qrcode(fn)
+            create_qrcode(ec)
         except:
             error = "yes"
 
