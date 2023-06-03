@@ -1,21 +1,20 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-from django.shortcuts import render
 from django.http import HttpResponse
-from django.core.files.storage import FileSystemStorage
 import cv2
-import matplotlib.pyplot as plt
 import time
 import os
 from . import FacialRecognition 
 from django.contrib import messages
 import subprocess
-import numpy as np
+from django.contrib.auth.models import User
+from employee.models import EmployeeDetail, Attendance
 import os
 import threading
 from django.shortcuts import redirect
 from datetime import datetime
+import unidecode
 
 currentPythonFilePath = os.getcwd()
         
@@ -34,34 +33,6 @@ detector = FacialRecognition.FaceDetector(
 recognizer = FacialRecognition.FaceRecognition(classifier_path= currentPythonFilePath+'/static/Models/facemodel.pkl'.replace('\\','/'))
 # Initialize barcode reader
 barcode_reader = FacialRecognition.BarcodeReader(verbose=False)
-
-def uploadFile(request):
-    context = {}
-    if request.method == 'POST':
-        uploaded_file = request.FILES['image']
-        fs = FileSystemStorage()
-        name = fs.save(uploaded_file.name, uploaded_file)
-        context['url'] = fs.url(name)
-    return context
-
-
-def imshowx(img, title='B2DL'):
-    fig_size = plt.rcParams["figure.figsize"]
-    fig_size[0] = 12
-    fig_size[1] = 4
-    plt.rcParams["figure.figsize"] = fig_size
-
-    plt.axis('off')
-    plt.title(title)
-    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-    plt.show()
-
-
-def imshowgrayx(img, title='BD2L'):
-    plt.axis('off')
-    plt.title(title)
-    plt.imshow(img, cmap=plt.get_cmap('gray'))
-    plt.show()
 
 #hàm mở camera và nhận diện khuôn mặt
 def face_recognition(request):
@@ -122,6 +93,9 @@ def face_detection(request):
         return HttpResponse("Khong the mo camera")
     count = 0
     start = True
+    folder_path = os.path.join(currentPythonFilePath, 'static', 'data', folder_name)
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
     while True:
         if count >= 10:
             messages.success(request, 'Có dữ liệu mới được thêm vào.')
@@ -131,11 +105,12 @@ def face_detection(request):
             rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # Detect faces in the frame
             faces, _ = detector.get_faces(rgb)
-            if start== True:
-                time.sleep(5)
-                start= False
+
             for face in faces:
                 faces_found= faces.shape[0]
+                if start== True:
+                    time.sleep(5)
+                    start= False
                 if faces_found > 1:
                         cv2.putText(rgb, "Chi Mot Khuon Mat", (0, 100), cv2.FONT_HERSHEY_COMPLEX_SMALL,
                                     1, (255, 255, 255), thickness=1, lineType=2)
@@ -144,17 +119,11 @@ def face_detection(request):
                     count += 1
                     # # Get face image
                     # face_img = rgb[int(y1):int(y2), int(x1):int(x2), :]
-                    
-                    folder_path = os.path.join(currentPythonFilePath, 'static', 'data', folder_name)
-                    if not os.path.exists(folder_path):
-                        os.makedirs(folder_path)
-
-                    image_path = os.path.join(folder_path, folder_name + str(count) + '.jpg')
-                    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    cv2.imwrite(image_path, rgb)
+                    image_path = os.path.join(folder_path, folder_name +'_'+ str(count) + '.jpg')
+                    cv2.imwrite(image_path, frame)
                     #draw bbox
-                    cv2.rectangle(rgb, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-                    cv2.imshow('Phat Hien Khuon Mat', rgb)
+                    show = cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+                    cv2.imshow('Phat Hien Khuon Mat', show)
                     
         except Exception as e:
             continue
@@ -167,7 +136,7 @@ def face_detection(request):
     cap.release()
     cv2.destroyAllWindows()
     messages.success(request, 'Tải ảnh thành công.')
-    return redirect('http://localhost:8000/ad_registration/')
+    return redirect('http://localhost:8000/ad_train/')
     return HttpResponse('Tải ảnh thành công.')
 
 def train(request):
@@ -215,11 +184,22 @@ class Camera_feed_identified(object):
         self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
         self.is_running = True
         (self.grabbed, self.frame) = self.video.read()
+        employees = EmployeeDetail.objects.all()
+        self.student_dict = {}
+        for student in employees:
+            self.student_dict[student.emcode] = student.user.last_name + ' ' + student.user.first_name
         #threading dung de chay song song voi chuong trinh chinh
         threading.Thread(target=self.update, args=()).start()
 
     def __del__(self):
         self.video.release()
+    
+    def get_name(self, emcode):
+        return self.student_dict.get(emcode)
+    
+    def remove_diacritics(self, text):
+        text = unidecode.unidecode(text)
+        return text
 
     def stop(self):
         self.is_running = False 
@@ -229,9 +209,17 @@ class Camera_feed_identified(object):
         #chuyển về màu RGB
         _, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
-
+    def perform_attendance(self,emcode, name):
+        attendance = Attendance.objects.create(
+            emcode=emcode,
+            name=name,
+            date=datetime.now().date(),
+            time=datetime.now().time()
+        )
+        attendance.save()
     def update(self):
         start = True
+        print(self.student_dict)
         while True:
             try:
                 grabbed, frame = self.video.read()              
@@ -241,8 +229,20 @@ class Camera_feed_identified(object):
                 barcodes, x, y, w, h = barcode_reader.read_barcodes(rgb)
                 
                 if barcodes != []:
-                    cv2.putText(frame, barcodes[-1], (x[-1], y[-1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-                    cv2.rectangle(frame, (x[-1], y[-1]), (x[-1] + w[-1], y[-1] + h[-1]), (0, 255, 0), 2)      
+                    #get name
+                    name = self.get_name(barcodes[-1])  
+                    if name != None:
+                       print (name)
+                       #self.perform_attendance(barcodes[-1], name)
+                       name = self.remove_diacritics(name)
+                       cv2.putText(frame, name, (x[-1], y[-1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                       cv2.rectangle(frame, (x[-1], y[-1]), (x[-1] + w[-1], y[-1] + h[-1]), (0, 255, 0), 2)   
+                    else:
+                        name = 'Khong co trong he thong'
+                        cv2.putText(frame, name, (x[-1], y[-1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                        cv2.rectangle(frame, (x[-1], y[-1]), (x[-1] + w[-1], y[-1] + h[-1]), (0, 255, 0), 2)
+                    
+                       
                 # Detect faces in the frame
             
                 faces, _= detector.get_faces(rgb)
@@ -257,14 +257,28 @@ class Camera_feed_identified(object):
                     embeddings = detector.get_embeddings(face_img)
                     
                     # Recognize face
-                    name, prob = recognizer.recognize_face(embeddings)
+                    emcode, prob = recognizer.recognize_face(embeddings)
                     if start:
                         time.sleep(3)
                         start = False
-                     
+                    if emcode != 'unknown':
+                        name = self.get_name(emcode)
+                        #lưu vào bảng điểm danh
+                        if name != None:
+                            #self.perform_attendance(emcode, name)
+                            #xóa dấu tiếng việt
+                            name = self.remove_diacritics(name)
+                        else:
+                            name = 'Khong xac dinh'
+                    else:
+                        name = 'Khong xac dinh'
                     # Draw rectangle and name
                     cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-                    cv2.putText(frame, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                    if name == 'Khong xac dinh':
+                        name = 'Khong co trong he thong'
+                        cv2.putText(frame, "{}".format(name), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                    else:
+                        cv2.putText(frame, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
                     self.frame = frame
                     self.grabbed = grabbed

@@ -105,8 +105,8 @@ def registration(request):
             user = User.objects.create_user(
                 first_name=fn, last_name=ln, username=em)
             EmployeeDetail.objects.create(user=user, emcode=ec)
-            EmployeeExperience.objects.create(user=user)
-            EmployeeEducation.objects.create(user=user)
+            # EmployeeExperience.objects.create(user=user)
+            # EmployeeEducation.objects.create(user=user)
             error = "no"
         except:
             error = "yes"
@@ -127,8 +127,8 @@ def ad_registration(request):
             user = User.objects.create_user(
                 first_name=fn, last_name=ln, username=em)
             EmployeeDetail.objects.create(user=user, emcode=ec)
-            EmployeeExperience.objects.create(user=user)
-            EmployeeEducation.objects.create(user=user)
+            # EmployeeExperience.objects.create(user=user)
+            # EmployeeEducation.objects.create(user=user)
             error = "no"
         except:
             error = "yes"
@@ -149,8 +149,8 @@ def save_registration(request):
             user = User.objects.create_user(
                 first_name=fn, last_name=ln, username=em)
             EmployeeDetail.objects.create(user=user, emcode=ec)
-            EmployeeExperience.objects.create(user=user)
-            EmployeeEducation.objects.create(user=user)
+            # EmployeeExperience.objects.create(user=user)
+            # EmployeeEducation.objects.create(user=user)
             error = "no"
             create_qrcode(ec)
         except:
@@ -172,8 +172,8 @@ def create_acc(request):
             user = User.objects.create_user(
                 first_name=fn, last_name=ln, username=em, password=pwd)
             EmployeeDetail.objects.create(user=user, emcode=ec)
-            EmployeeExperience.objects.create(user=user)
-            EmployeeEducation.objects.create(user=user)
+            # EmployeeExperience.objects.create(user=user)
+            # EmployeeEducation.objects.create(user=user)
             error = "no"
         except:
             error = "yes"
@@ -250,7 +250,7 @@ def my_experience(request):
         return redirect('emp_login')
 
     user = request.user
-    experience = EmployeeExperience.objects.get(user=user)
+    # experience = EmployeeExperience.objects.get(user=user)
 
     return render(request, 'my_experience.html', locals())
 
@@ -259,45 +259,45 @@ def edit_myexperience(request):
     if not request.user.is_authenticated:
         return redirect('emp_login')
     error = ""
-    user = request.user
-    experience = EmployeeExperience.objects.get(user=user)
-    if request.method == "POST":
-        company1name = request.POST['company1name']
-        company1desig = request.POST['company1desig']
-        company1salary = request.POST['company1salary']
-        company1duration = request.POST['company1duration']
+    # user = request.user
+    # experience = EmployeeExperience.objects.get(user=user)
+    # if request.method == "POST":
+    #     company1name = request.POST['company1name']
+    #     company1desig = request.POST['company1desig']
+    #     company1salary = request.POST['company1salary']
+    #     company1duration = request.POST['company1duration']
 
-        company2name = request.POST['company2name']
-        company2desig = request.POST['company2desig']
-        company2salary = request.POST['company2salary']
-        company2duration = request.POST['company2duration']
+    #     company2name = request.POST['company2name']
+    #     company2desig = request.POST['company2desig']
+    #     company2salary = request.POST['company2salary']
+    #     company2duration = request.POST['company2duration']
 
-        company3name = request.POST['company3name']
-        company3desig = request.POST['company3desig']
-        company3salary = request.POST['company3salary']
-        company3duration = request.POST['company3duration']
+    #     company3name = request.POST['company3name']
+    #     company3desig = request.POST['company3desig']
+    #     company3salary = request.POST['company3salary']
+    #     company3duration = request.POST['company3duration']
 
-        experience.company1name = company1name
-        experience.company1desig = company1desig
-        experience.company1salary = company1salary
-        experience. company1duration = company1duration
+    #     experience.company1name = company1name
+    #     experience.company1desig = company1desig
+    #     experience.company1salary = company1salary
+    #     experience. company1duration = company1duration
 
-        experience.company2name = company2name
-        experience.company2desig = company2desig
-        experience.company2salary = company2salary
-        experience. company2duration = company2duration
+    #     experience.company2name = company2name
+    #     experience.company2desig = company2desig
+    #     experience.company2salary = company2salary
+    #     experience. company2duration = company2duration
 
-        experience.company3name = company3name
-        experience.company3desig = company3desig
-        experience.company3salary = company3salary
-        experience. company3duration = company3duration
+    #     experience.company3name = company3name
+    #     experience.company3desig = company3desig
+    #     experience.company3salary = company3salary
+    #     experience. company3duration = company3duration
 
-        try:
-            experience.save()
+    #     try:
+    #         experience.save()
 
-            error = "no"
-        except:
-            error = "yes"
+    #         error = "no"
+    #     except:
+    #         error = "yes"
     return render(request, 'edit_myexperience.html', locals())
 
 
@@ -305,8 +305,8 @@ def my_education(request):
     if not request.user.is_authenticated:
         return redirect('emp_login')
 
-    user = request.user
-    education = EmployeeEducation.objects.get(user=user)
+    # user = request.user
+    # education = EmployeeEducation.objects.get(user=user)
 
     return render(request, 'my_education.html', locals())
 
@@ -315,55 +315,55 @@ def edit_myeducation(request):
     if not request.user.is_authenticated:
         return redirect('emp_login')
     error = ""
-    user = request.user
-    education = EmployeeEducation.objects.get(user=user)
-    if request.method == "POST":
-        coursepg = request.POST['coursepg']
-        shoolclgpg = request.POST['shoolclgpg']
-        yearofpassingpg = request.POST['yearofpassingpg']
-        percentagepg = request.POST['percentagepg']
+    # user = request.user
+    # education = EmployeeEducation.objects.get(user=user)
+    # if request.method == "POST":
+    #     coursepg = request.POST['coursepg']
+    #     shoolclgpg = request.POST['shoolclgpg']
+    #     yearofpassingpg = request.POST['yearofpassingpg']
+    #     percentagepg = request.POST['percentagepg']
 
-        coursepgra = request.POST['coursepgra']
-        shoolclgpggra = request.POST['shoolclgpggra']
-        yearofpassingra = request.POST['yearofpassingra']
-        percentagegra = request.POST['percentagegra']
+    #     coursepgra = request.POST['coursepgra']
+    #     shoolclgpggra = request.POST['shoolclgpggra']
+    #     yearofpassingra = request.POST['yearofpassingra']
+    #     percentagegra = request.POST['percentagegra']
 
-        coursessc = request.POST['coursessc']
-        shoolclgssc = request.POST['shoolclgssc']
-        yearofpassingssc = request.POST['yearofpassingssc']
-        percentagessc = request.POST['percentagessc']
+    #     coursessc = request.POST['coursessc']
+    #     shoolclgssc = request.POST['shoolclgssc']
+    #     yearofpassingssc = request.POST['yearofpassingssc']
+    #     percentagessc = request.POST['percentagessc']
 
-        coursehsc = request.POST['coursehsc']
-        shoolclghsc = request.POST['shoolclghsc']
-        yearofpassighsc = request.POST['yearofpassighsc']
-        percentagehsc = request.POST['percentagehsc']
+    #     coursehsc = request.POST['coursehsc']
+    #     shoolclghsc = request.POST['shoolclghsc']
+    #     yearofpassighsc = request.POST['yearofpassighsc']
+    #     percentagehsc = request.POST['percentagehsc']
 
-        education.coursepg = coursepg
-        education.shoolclgpg = shoolclgpg
-        education.yearofpassingpg = yearofpassingpg
-        education. percentagepg = percentagepg
+    #     education.coursepg = coursepg
+    #     education.shoolclgpg = shoolclgpg
+    #     education.yearofpassingpg = yearofpassingpg
+    #     education. percentagepg = percentagepg
 
-        education.coursepgra = coursepgra
-        education.shoolclgpggra = shoolclgpggra
-        education.yearofpassingra = yearofpassingra
-        education. percentagegra = percentagegra
+    #     education.coursepgra = coursepgra
+    #     education.shoolclgpggra = shoolclgpggra
+    #     education.yearofpassingra = yearofpassingra
+    #     education. percentagegra = percentagegra
 
-        education.coursessc = coursessc
-        education.shoolclgssc = shoolclgssc
-        education.yearofpassingssc = yearofpassingssc
-        education. percentagessc = percentagessc
+    #     education.coursessc = coursessc
+    #     education.shoolclgssc = shoolclgssc
+    #     education.yearofpassingssc = yearofpassingssc
+    #     education. percentagessc = percentagessc
 
-        education.coursehsc = coursehsc
-        education.shoolclghsc = shoolclghsc
-        education.yearofpassighsc = yearofpassighsc
-        education. percentagehsc = percentagehsc
+    #     education.coursehsc = coursehsc
+    #     education.shoolclghsc = shoolclghsc
+    #     education.yearofpassighsc = yearofpassighsc
+    #     education. percentagehsc = percentagehsc
 
-        try:
-            education.save()
+    #     try:
+    #         education.save()
 
-            error = "no"
-        except:
-            error = "yes"
+    #         error = "no"
+    #     except:
+    #         error = "yes"
     return render(request, 'edit_myeducation.html', locals())
 
 

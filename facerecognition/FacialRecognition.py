@@ -62,7 +62,7 @@ class FaceRecognition:
             self.model, self.class_names = pickle.load(file)
         print("Custom Classifier, Successfully loaded")
 
-    def recognize_face(self, embeddings: np.ndarray, threshold: float = 0.8) -> Tuple[str, float]:
+    def recognize_face(self, embeddings: np.ndarray, threshold: float = 0.7) -> Tuple[str, float]:
         predictions = self.model.predict_proba(embeddings)
         best_class_indices = np.argmax(predictions, axis=1)
         best_class_probabilities = predictions[np.arange(len(best_class_indices)), best_class_indices]
@@ -75,6 +75,9 @@ class BarcodeReader:
 
     def read_barcodes(self, frame: np.ndarray) -> List[str]:
         # draw bounding box around barcode and display barcode type and data to terminal
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #lật ảnh
+        frame = cv2.flip(frame, 1)
         decoded_objs = decode(frame)
         barcodes = []
         x_list = []
@@ -84,20 +87,14 @@ class BarcodeReader:
         
         for obj in decoded_objs:
             barcodes.append(obj.data.decode('utf-8'))
-            
             # Draw bounding box around barcode
             obj_x, obj_y, obj_w, obj_h = obj.rect
             x_list.append(obj_x)
             y_list.append(obj_y)
             w_list.append(obj_w)
             h_list.append(obj_h)
-            
-            if self.verbose:
-                print("Barcode:", barcodes[-1])
         
         return barcodes, x_list, y_list, w_list, h_list
-
-    
 
 def main(args):
     # Load face detector and recognizer
