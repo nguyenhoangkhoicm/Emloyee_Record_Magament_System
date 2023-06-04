@@ -21,7 +21,7 @@ def index(request):
     return render(request, 'index.html',context)
 
 def read_csv(file_path):
-    with open(file_path, newline='') as csvfile:
+    with open(file_path, newline='', encoding= 'utf-8') as csvfile:
         reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         name_list = []
         for row in reader:
