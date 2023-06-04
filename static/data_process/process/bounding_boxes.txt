@@ -1,32 +1,36 @@
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/87\flip_khoicm1.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/87\rotate_khoicm1.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010275.png 209 204 430 463
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010279.png 196 184 425 475
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010273.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010279.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010278.png 196 184 427 475
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010275.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010276.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_19050102710.png 195 184 423 477
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010271.png 196 199 428 480
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010271.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010277.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010278.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010277.png 198 185 425 474
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010272.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010272.png 194 192 424 480
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010278.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010273.png 201 201 426 470
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010275.png 197 190 422 474
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010279.png 210 195 439 467
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010273.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_19050102710.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010276.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010272.png 208 203 431 467
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010271.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_1905010274.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\rotate_19050102710.png 208 197 433 466
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010277.png
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010276.png 195 185 425 477
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\noise_1905010274.png 196 188 424 479
-C:/Users/hault/Desktop/Emloyee_Record_Magament_System/static/data_process/process/190501027\flip_1905010274.png
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/123124\rotated_right_1231249.png 167 186 389 468
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/123124\rotated_left_1231249.png 209 208 428 465
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/123124\noise_1231249.png 189 201 410 478
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\noise_190201002_9.png 6 13 335 407
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_left_190201002_7.png 24 85 318 432
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\noise_190201002_5.png 19 4 335 395
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_left_190201002_2.png 35 80 326 430
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\noise_190201002_2.png 16 17 327 396
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\noise_190201002_7.png 23 26 317 390
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_left_190201002_1.png 0 97 243 453
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_right_190201002_7.png 17 0 322 360
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_left_190201002_10.png 16 83 317 439
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_right_190201002_4.png 24 0 324 351
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_right_190201002_5.png 28 0 326 345
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_right_190201002_10.png 24 0 320 354
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\noise_190201002_3.png 26 11 340 393
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_right_190201002_9.png 12 0 314 354
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\noise_190201002_1.png 0 33 253 379
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_left_190201002_3.png 36 80 329 427
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_right_190201002_1.png 0 0 253 325
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_right_190201002_6.png 25 0 325 347
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\noise_190201002_6.png 17 3 336 397
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_right_190201002_2.png 19 0 324 358
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_right_190201002_3.png 20 0 329 359
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\noise_190201002_10.png 4 15 332 408
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\noise_190201002_8.png 21 29 317 395
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_left_190201002_5.png 29 85 322 429
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_left_190201002_8.png 25 85 320 433
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_left_190201002_4.png 27 83 322 430
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\noise_190201002_4.png 32 30 320 383
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_left_190201002_6.png 19 84 317 433
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_left_190201002_9.png 12 83 312 437
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/190201002\rotated_right_190201002_8.png 17 0 321 356
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/87\noise_khoicm1.png 0 0 324 391
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/87\rotate_khoicm1.png
+C:/Users/Khoi Nguyen/Documents/GitHub/Emloyee_Record_Magament_System/static/data_process/process/87\flip_khoicm1.png

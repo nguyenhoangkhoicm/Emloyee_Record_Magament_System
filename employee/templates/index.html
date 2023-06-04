@@ -8,7 +8,7 @@
     align-items: flex-start;
     justify-content: center;
     height: 100%;
-   
+
   }
 
   #camera-image {
@@ -77,38 +77,70 @@
 
     </div>
 
-
     <div class="col-md-6 col-sm-12">
-      <div class="card">
-        <div class="card-body">
-          <div class="info-container" id="info-container">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Probability</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>John Doe</td>
-                  <td>0.85</td>
-                </tr>
-                <tr>
-                  <td>Jane Smith</td>
-                  <td>0.92</td>
-                </tr>
-                <!-- Add more rows here -->
-              </tbody>
-            </table>
-          </div>
+      <div class="box box-info">
+        <div class="box-header with-border">
+          <h6 class="box-title">Danh sách có mặt</h3>
+        </div>
+        <div class="box-body">
+          <ul id="user-list">
+
+          </ul>
         </div>
       </div>
     </div>
   </div>
 </div>
+</div>
 
 <script type="text/javascript">
+
+document.addEventListener('DOMContentLoaded', function() {
+  const attendeeListUl = document.getElementById('user-list');
+  const successAttendees = []; // Danh sách các tên đã điểm danh thành công
+
+  // Cập nhật danh sách đại biểu mỗi 3 giây
+  intervalId = setInterval(() => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '/attendee_list/');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        const attendees = JSON.parse(xhr.responseText);
+
+        attendeeListUl.innerHTML = '';
+
+        for (let i = 0; i < attendees.length; i++) {
+          const li = document.createElement('li');
+          li.textContent = attendees[i];
+          attendeeListUl.appendChild(li);
+
+          // Kiểm tra xem tên đã điểm danh trước đó chưa
+          if (!successAttendees.includes(attendees[i])) {
+            successAttendees.push(attendees[i]); // Thêm tên vào danh sách đã điểm danh thành công
+
+            // Hiển thị thông báo điểm danh thành công cho tên chưa điểm danh trước đó
+            Swal.fire({
+              icon: 'success',
+              title: 'Điểm danh thành công',
+              text: 'Điểm danh thành công: ' + attendees[i],
+              showConfirmButton: false,
+              timer: 1500 // Thời gian hiển thị thông báo (miligiay)
+            });
+          }
+        }
+      } else {
+        console.log('Không thể lấy danh sách đại biểu');
+      }
+    };
+    xhr.onerror = function() {
+      alert('Kết nối bị ngắt. Dừng gửi yêu cầu tới server');
+      clearInterval(intervalId);
+    };
+    xhr.send();
+  }, 3000);
+});
+
+
 
   // Lắng nghe sự kiện chuyển trang
   window.addEventListener('beforeunload', function (e) {
@@ -217,6 +249,8 @@
     }
     return cookieValue;
   }
+
+
 </script>
 
 {% endblock %}

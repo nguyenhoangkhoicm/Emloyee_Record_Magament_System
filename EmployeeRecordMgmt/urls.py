@@ -54,4 +54,5 @@ urlpatterns = [
     path('ad_registration/',ad_registration,name='ad_registration'),
     path('save_registration/',save_registration,name='save_registration'),
     path('identified/', identified, name='identified'),
+    path('attendee_list/', attendee_list, name='attendee_list'),
 ]

@@ -7,16 +7,31 @@ from django.contrib import messages
 from django.urls import reverse
 import os
 import shutil
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect,HttpResponse
 import qrcode
-
-
+import csv
+import json
 # Create your views here.
 
 
 def index(request):
-    return render(request, 'index.html')
+    file_path = './name.csv'
+    name_list = read_csv(file_path)
+    context = {'name_list': name_list}
+    return render(request, 'index.html',context)
 
+def read_csv(file_path):
+    with open(file_path, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        name_list = []
+        for row in reader:
+            name_list.append(row[0])
+    return name_list
+# hàm trả kết quả tên đại biểu có mặt
+def attendee_list(request):
+    file_path = 'name.csv'
+    name_list = read_csv(file_path)
+    return HttpResponse(json.dumps(name_list), content_type='application/json')
 
 def ifter(request):
     return render(request, 'interface.html')
