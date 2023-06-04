@@ -48,7 +48,7 @@ def timetrain(request):
 def create_qrcode(text):
     # Tạo đối tượng QR code
     qr = qrcode.QRCode(
-        version=1,
+        version=4,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
         box_size=10,
         border=4,

@@ -135,9 +135,8 @@ def face_detection(request):
             break
     cap.release()
     cv2.destroyAllWindows()
-    messages.success(request, 'Tải ảnh thành công.')
-    return redirect('http://localhost:8000/ad_train/')
-    return HttpResponse('Tải ảnh thành công.')
+    messages.success(request, 'Có dữ liệu mới được thêm vào.')
+    return HttpResponse('success')
 
 def train(request):
     currentPythonFilePath = os.getcwd().replace('\\','/')
@@ -264,7 +263,7 @@ class Camera_feed_identified(object):
                     if emcode != 'unknown':
                         name = self.get_name(emcode)
                         #lưu vào bảng điểm danh
-                        if name != None:
+                        if name is not None:
                             #self.perform_attendance(emcode, name)
                             #xóa dấu tiếng việt
                             name = self.remove_diacritics(name)
