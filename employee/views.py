@@ -11,26 +11,27 @@ from django.http import JsonResponse, HttpResponseRedirect,HttpResponse
 import qrcode
 import csv
 import json
+import datetime
 # Create your views here.
 
 
+def load(request):
+    return render(request, 'loading.html')
+
 def index(request):
-    file_path = './name.csv'
-    name_list = read_csv(file_path)
+    attendance = Attendance.objects.filter(date=datetime.date.today())
+    name_list = []
+    for i in attendance:
+        name_list.append(i.name)
+
     context = {'name_list': name_list}
     return render(request, 'index.html',context)
 
-def read_csv(file_path):
-    with open(file_path, newline='', encoding= 'utf-8') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',', quotechar='|')
-        name_list = []
-        for row in reader:
-            name_list.append(row[0])
-    return name_list
-# hàm trả kết quả tên đại biểu có mặt
 def attendee_list(request):
-    file_path = 'name.csv'
-    name_list = read_csv(file_path)
+    attendance = Attendance.objects.filter(date=datetime.date.today())
+    name_list = []
+    for i in attendance:
+        name_list.append(i.name)
     return HttpResponse(json.dumps(name_list), content_type='application/json')
 
 def ifter(request):

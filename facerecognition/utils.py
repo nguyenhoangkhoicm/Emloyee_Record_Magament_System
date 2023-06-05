@@ -79,6 +79,31 @@ def face_recognition(request):
     cap.release()
     cv2.destroyAllWindows()
     return HttpResponse(name,barcodes)
+#hàm lấy ảnh từ video cách mỗi 10s 1 lần và lưu vào thư mục static, đọc video từ dường dẫn
+def get_frame(request,path_video):
+    # Create named window
+    cv2.namedWindow('Lay Anh Tu Video')
+    cap = cv2.VideoCapture(path_video)
+    if not cap.isOpened():
+        return HttpResponse("Không thể đọc video")
+    count = 0
+    while True:
+        try:
+            ret, frame = cap.read()
+            #xác định thời gian hiện tại của video
+            currentframe = cap.get(cv2.CAP_PROP_POS_MSEC)
+        except Exception as e:
+            continue
+
+        # Check if window is closed
+        if cv2.getWindowProperty('Lay Anh Tu Video', cv2.WND_PROP_VISIBLE) < 1:
+            break
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+    return HttpResponse(count)
+   
 
 def face_detection(request):
     
@@ -232,93 +257,93 @@ class Camera_feed_identified(object):
         self.recognized_records[code] = current_time
         return False  # Chưa xác định điểm danh trùng lặp
     
-    def update(self):
-        with open('name.csv', mode='a', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)       
-            start= True
-            while True:
-                try:
-                    grabbed, frame = self.video.read()
-                    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    
-                    # Đọc mã vạch từ hình ảnh
-                    barcodes, x, y, w, h = barcode_reader.read_barcodes(rgb)
-                    
-                    if barcodes:
-                        # Lấy mã vạch cuối cùng
-                        code = barcodes[-1]
+    def update(self):    
+        # start= True
+        while True:
+            try:
+                grabbed, frame = self.video.read()
+                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                
+                # Đọc mã vạch từ hình ảnh
+                barcodes, x, y, w, h = barcode_reader.read_barcodes(rgb)
+                
+                if barcodes:
+                    # Lấy mã vạch cuối cùng
+                    code = barcodes[-1]
 
-                        # Lấy tên từ mã vạch
-                        name = self.get_name(code)
+                    # Lấy tên từ mã vạch
+                    name = self.get_name(code)
+                    if name is not None:
+                        # Kiểm tra và xử lý điểm danh trùng lặp
+                        print(name)
+                        if self.check_duplicate_attendance(code)==False:                 
+                            # Ghi vào file CSV
+                            
+                            #writer.writerow([name])
+                            # Thực hiện điểm danh
+                            self.perform_attendance(code, name)
+                        
+                        name = self.remove_diacritics(name)
+                        cv2.putText(frame, name, (x[-1], y[-1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                        cv2.rectangle(frame, (x[-1], y[-1]), (x[-1] + w[-1], y[-1] + h[-1]), (0, 255, 0), 2)
+                    else:
+                        name = 'Khong co trong he thong'
+                        cv2.putText(frame, name, (x[-1], y[-1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                        cv2.rectangle(frame, (x[-1], y[-1]), (x[-1] + w[-1], y[-1] + h[-1]), (0, 255, 0), 2)
+                
+                # Phát hiện khuôn mặt trong khung
+                faces, _ = detector.get_faces(rgb)
+                # if start:
+                #     time.sleep(2)
+                #     start = False
+                for face in faces:
+                    x1, y1, x2, y2 = face[:4]
+                    
+                    # Lấy ảnh khuôn mặt
+                    face_img = rgb[int(y1):int(y2), int(x1):int(x2), :]
+                    
+                    # Lấy embedding của khuôn mặt
+                    embeddings = detector.get_embeddings(face_img)
+                    
+                    # Nhận dạng khuôn mặt
+                    emcode, prob = recognizer.recognize_face(embeddings)
+
+                    if emcode != 'unknown':
+                        name = self.get_name(emcode)
                         if name is not None:
                             # Kiểm tra và xử lý điểm danh trùng lặp
-                            print(name)
-                            if self.check_duplicate_attendance(code)==False:                 
+                            if self.check_duplicate_attendance(emcode)==False:
                                 # Ghi vào file CSV
-                                
-                                writer.writerow([name])
-                            
+                                #writer.writerow([name])
+                                self.perform_attendance(emcode, name)
+                                # Bỏ qua điểm danh nếu đã được thực hiện trong khoảng thời gian 3 phút
                             name = self.remove_diacritics(name)
-                            cv2.putText(frame, name, (x[-1], y[-1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-                            cv2.rectangle(frame, (x[-1], y[-1]), (x[-1] + w[-1], y[-1] + h[-1]), (0, 255, 0), 2)
-                        else:
-                            name = 'Khong co trong he thong'
-                            cv2.putText(frame, name, (x[-1], y[-1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-                            cv2.rectangle(frame, (x[-1], y[-1]), (x[-1] + w[-1], y[-1] + h[-1]), (0, 255, 0), 2)
-                    
-                    # Phát hiện khuôn mặt trong khung
-                    faces, _ = detector.get_faces(rgb)
-                    if start:
-                        time.sleep(2)
-                        start = False
-                    for face in faces:
-                        x1, y1, x2, y2 = face[:4]
-                        
-                        # Lấy ảnh khuôn mặt
-                        face_img = rgb[int(y1):int(y2), int(x1):int(x2), :]
-                        # Lưu ảnh vào thư mục static
-                        
-                        # Lấy embedding của khuôn mặt
-                        embeddings = detector.get_embeddings(face_img)
-                        
-                        # Nhận dạng khuôn mặt
-                        emcode, prob = recognizer.recognize_face(embeddings)
-
-                        if emcode != 'unknown':
-                            name = self.get_name(emcode)
-                            if name is not None:
-                                # Kiểm tra và xử lý điểm danh trùng lặp
-                                if self.check_duplicate_attendance(emcode)==False:
-                                    # Ghi vào file CSV
-                                    writer.writerow([name])
-                                    # Bỏ qua điểm danh nếu đã được thực hiện trong khoảng thời gian 3 phút
-                                name = self.remove_diacritics(name)
-                            else:
-                                name = 'Khong xac dinh'
                         else:
                             name = 'Khong xac dinh'
-                        
-                        # Vẽ hình chữ nhật và tên
-                        cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-                        if name == 'Khong xac dinh':
-                            name = 'Khong co trong he thong'
-                            cv2.putText(frame, "{}".format(name), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-                        else:
-                            cv2.putText(frame, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                    else:
+                        name = 'Khong xac dinh'
+                    
+                    # Vẽ hình chữ nhật và tên
+                    cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+                    if name == 'Khong xac dinh':
+                        name = 'Khong co trong he thong'
+                        cv2.putText(frame, "{}".format(name), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                    else:
+                        cv2.putText(frame, "{} {:.2f}".format(name, prob), (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
+                self.frame = frame
+                self.grabbed = grabbed
+            
+            except:
+                try:
+                    grabbed, frame = self.video.read()
                     self.frame = frame
                     self.grabbed = grabbed
-                
                 except:
-                    try:
-                        grabbed, frame = self.video.read()
-                        self.frame = frame
-                        self.grabbed = grabbed
-                    except:
-                        pass
-                
-                if not self.is_running:
-                    break
+                    pass
+            
+            if not self.is_running:
+                break
             
 
 def Gender_frame(camera):

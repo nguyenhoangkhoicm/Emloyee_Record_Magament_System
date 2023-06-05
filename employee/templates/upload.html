@@ -1,20 +1,76 @@
-<form action="/upload_images/" method="POST" enctype="multipart/form-data" class="p-3 border rounded">
-    {% csrf_token %}
-    <input type="hidden" name="folder_name" value="{{ folder_name }}">
-    <div class="row">
-        {% for i in "0123456789" %}
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="image_{{ i }}">Chọn hình ảnh {{ i }}:</label>
-                    <input type="file" id="image_{{ i }}" name="image_{{ i }}" class="form-control-file">
+<style>
+    .border-rounded {
+        border-radius: 10px;
+    }
+
+    .form-container {
+        background-color: #f9f9f9;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .form-control-file {
+        border: 1px solid #ccc;
+        padding: 8px;
+        border-radius: 5px;
+    }
+
+    .submit-button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .success-message {
+        color: green;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="form-container border-rounded">
+    <h2 class="form-title">Tải lên hình ảnh</h2>
+    <form action="/upload_images/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="folder_name" value="{{ folder_name }}">
+        <div class="row">
+            {% for i in "0123456789" %}
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="form-label" for="image_{{ i }}">Chọn hình ảnh {{ i }}:</label>
+                        <input type="file" id="image_{{ i }}" name="image_{{ i }}" class="form-control-file">
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Tải lên" class="btn btn-primary ">
-    </div>
-</form>
+            {% endfor %}
+        </div>
+        <div class="form-group text-center">
+            <input type="submit" value="Tải lên" class="submit-button">
+        </div>
+    </form>
+    <div id="success-message" class="success-message" style="display: none;"></div>
+</div>
+
 <script>
     document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -26,7 +82,8 @@
     .then(response => response.json())
     .then(data => {
         if (data.message === 'Tải lên hình ảnh thành công') {
-            alert('Tải lên hình ảnh thành công');
+            document.getElementById('success-message').style.display = 'block';
+            document.getElementById('success-message').innerText = 'Tải lên hình ảnh thành công';
         }
     });
 });
