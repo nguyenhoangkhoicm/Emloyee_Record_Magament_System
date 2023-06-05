@@ -20,14 +20,16 @@
             <table class="table table-bordered ta" id="example">
                 <thead class="text-light bg-danger">
                     <tr>
-                        <th>S No. </th>
-                        <th>Emp_Code </th>
-                        <th>First Name</th>
-                        <th>Last Name </th>
-                        <th>Email ID</th>
-                        <th>Contact No.</th>
-                        <th>Joining Date</th>
-                        <th>Action</th>
+                        <th>STT </th>
+                        <th>Mã nhân viên </th>
+                        <th>Họ</th>
+                        <th>Tên</th>
+                        <th>Giới tính</th>
+                        <th>Email</th>
+                        <th>Địa chỉ</th>
+                        <th>Phòng ban</th>
+                        
+                        <th>Hành động</th>
                     </tr>
                 </thead>
 
@@ -36,11 +38,14 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ i.emcode }}</td>
-                        <td>{{ i.user.first_name }}</td>
                         <td>{{ i.user.last_name }}</td>
+                        <td>{{ i.user.first_name }}</td>
+                        <td>{{ i.gender }}</td>
                         <td>{{ i.user.username }}</td>
-                        <td>{{ i.contact }}</td>
-                        <td>{{ i.joiningdate }}</td>
+                       
+                        <td>{{ i.address }}</td>
+                        <td>{{ i.department }}</td>
+                       
                         <td>
                             <form method="post" action="{% url 'delete_employee' i.id %}">
                                 {% csrf_token %}

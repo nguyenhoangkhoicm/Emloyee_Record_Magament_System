@@ -110,44 +110,48 @@ def upload_images(request):
 
 def registration(request):
 
-    error = ""
-    if request.method == "POST":
-        fn = request.POST['firstname']
-        ln = request.POST['lastname']
-        ec = request.POST['empcode']
-        em = request.POST['email']
+    # error = ""
+    # if request.method == "POST":
+    #     fn = request.POST['firstname']
+    #     ln = request.POST['lastname']
+    #     ec = request.POST['empcode']
+    #     em = request.POST['email']
+    #     ad=request.POST['contact']
+    #     dp=request.POST['joiningdate']
 
-        try:
-            user = User.objects.create_user(
-                first_name=fn, last_name=ln, username=em)
-            EmployeeDetail.objects.create(user=user, emcode=ec)
-            # EmployeeExperience.objects.create(user=user)
-            # EmployeeEducation.objects.create(user=user)
-            error = "no"
-        except:
-            error = "yes"
+    #     try:
+    #         user = User.objects.create_user(
+    #             first_name=fn, last_name=ln, username=em)
+    #         EmployeeDetail.objects.create(user=user, emcode=ec, Address=ad, Department=dp)
+    #         # EmployeeExperience.objects.create(user=user)
+    #         # EmployeeEducation.objects.create(user=user)
+    #         error = "no"
+    #     except:
+    #         error = "yes"
 
     return render(request, 'registration.html', locals())
 
 
 def ad_registration(request):
-    error = ""
+    # error = ""
 
-    if request.method == "POST":
-        fn = request.POST['firstname']
-        ln = request.POST['lastname']
-        ec = request.POST['empcode']
-        em = request.POST['email']
+    # if request.method == "POST":
+    #     fn = request.POST['firstname']
+    #     ln = request.POST['lastname']
+    #     ec = request.POST['empcode']
+    #     em = request.POST['email']
+    #     ad=  request.POST['address']
+    #     dp=  request.POST['department']
 
-        try:
-            user = User.objects.create_user(
-                first_name=fn, last_name=ln, username=em)
-            EmployeeDetail.objects.create(user=user, emcode=ec)
-            # EmployeeExperience.objects.create(user=user)
-            # EmployeeEducation.objects.create(user=user)
-            error = "no"
-        except:
-            error = "yes"
+    #     try:
+    #         user = User.objects.create_user(
+    #             first_name=fn, last_name=ln, username=em)
+    #         EmployeeDetail.objects.create(user=user, emcode=ec, address=ad, department=dp)
+    #         # EmployeeExperience.objects.create(user=user)
+    #         # EmployeeEducation.objects.create(user=user)
+    #         error = "no"
+    #     except:
+    #         error = "yes"
 
     return render(request, 'admin_rg.html', locals())
 
@@ -156,17 +160,19 @@ def save_registration(request):
     error = ""
 
     if request.method == "POST":
-        fn = request.POST['empcode']
+        fn = request.POST['firstname']
         ln = request.POST['lastname']
-        ec = request.POST['firstname']
+        ec = request.POST['empcode']
         em = request.POST['email']
+        ad=  request.POST['address']
+        dp=  request.POST['department']
+        ge=  request.POST['gender']
 
         try:
             user = User.objects.create_user(
                 first_name=fn, last_name=ln, username=em)
-            EmployeeDetail.objects.create(user=user, emcode=ec)
-            # EmployeeExperience.objects.create(user=user)
-            # EmployeeEducation.objects.create(user=user)
+            EmployeeDetail.objects.create(user=user, emcode=ec,address=ad,department=dp,gender=ge)
+          
             error = "no"
             create_qrcode(ec)
         except:
@@ -512,22 +518,6 @@ def edit_profile(request):
             error = "yes"
     return render(request, 'edit_profile.html', locals())
 
-# def delete_employee(request, id):
-#     if not request.user.is_authenticated:
-#         return redirect('admin_login')
-
-#     employee = get_object_or_404(EmployeeDetail, pk=id)
-#     user_id = employee.user_id
-
-#     try:
-#         user = User.objects.get(id=user_id)
-#         user.delete()
-#         employee.delete()
-#         return redirect('all_employee')
-#     except User.DoesNotExist:
-#         # Xử lý lỗi khi người dùng không tồn tại
-#         # ...
-#         return redirect('all_employee')
 
 def delete_employee(request, id):
     if not request.user.is_authenticated:

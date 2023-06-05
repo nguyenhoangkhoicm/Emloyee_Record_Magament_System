@@ -58,26 +58,28 @@
                 <div class="list-group">
                     <a href="{% url 'admin_home' %}"
                         class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/admin_home/' %} active {% endif %}">
-                        <i class="fa fa-tachometer-alt"></i>    Bảng điều khiển</a>
+                        <i class="fa fa-tachometer-alt"></i> Bảng điều khiển</a>
+                    <a href="{% url 'load' %}"
+                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '' %} active {% endif %}">
+                        <i class="fas fa-home"></i> Về Trang Chủ
+                    </a>
                     <a href="{% url 'all_employee' %}"
                         class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/all_employee/' %} active {% endif %}">
-                        <i class="fa fa-users"></i>     Thông tin tài khoản</a>
+                        <i class="fa fa-users"></i> Thông tin tài khoản</a>
                     <a href="{% url 'ad_registration' %}"
                         class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/ad_registration/' %} active {% endif %}">
-                        <i class="fa fa-user-plus"></i>     Đăng ký tài khoản</a>
+                        <i class="fa fa-user-plus"></i> Đăng ký tài khoản</a>
                     <a href="{% url 'ad_train' %}"
                         class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/ad_train/' %} active {% endif %}">
-                        <i class="fa fa-database"></i>  Train dữ liệu</a>
+                        <i class="fa fa-database"></i> Train dữ liệu</a>
                     <a href="{% url 'change_passwordadmin' %}"
                         class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/change_password/' %} active {% endif %}">
-                        <i class="fa fa-lock"></i>  Đổi mật khẩu</a>
-                        <a href="{% url 'index' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '' %} active {% endif %}">
-                            <i class="fas fa-home"></i> Về Trang Chủ
-                        </a>
+                        <i class="fa fa-lock"></i> Đổi mật khẩu</a>
+
                     <a href="{% url 'logout' %}"
                         class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/logout/' %} active {% endif %}">
-                        <i class="fas fa-sign-out-alt"></i>     Đăng xuất</a>
-                    
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+
                 </div>
             </div>
             <div class="col-sm-10 p-0">
