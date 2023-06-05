@@ -205,7 +205,7 @@ def train(request):
 
 class Camera_feed_identified(object):
     def __init__(self):
-        self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        self.video = cv2.VideoCapture(1, cv2.CAP_DSHOW)
         self.is_running = True
         (self.grabbed, self.frame) = self.video.read()
         self.recognized_records = {}

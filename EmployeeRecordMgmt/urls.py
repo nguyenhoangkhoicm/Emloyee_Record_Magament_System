@@ -52,8 +52,10 @@ urlpatterns = [
     path('ifter/',ifter,name='ifter'),
     path('timetrain/',timetrain,name='timetrain'),
     path('ad_train/',ad_train,name='ad_train'),
+    path('ad_attendance/',ad_attendance,name='ad_attendance'),
     path('ad_registration/',ad_registration,name='ad_registration'),
     path('save_registration/',save_registration,name='save_registration'),
     path('identified/', identified, name='identified'),
     path('attendee_list/', attendee_list, name='attendee_list'),
+    path('export-to-excel/', export_to_excel, name='export_to_excel'),
 ]

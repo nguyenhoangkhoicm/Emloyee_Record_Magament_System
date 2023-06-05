@@ -12,6 +12,7 @@ import qrcode
 import csv
 import json
 import datetime
+import xlwt
 # Create your views here.
 
 
@@ -37,6 +38,35 @@ def attendee_list(request):
 def ifter(request):
     return render(request, 'interface.html')
 
+def ad_attendance(request):
+    attendances = Attendance.objects.all()
+    return render(request, 'ad_attendance.html', {'attendances': attendances})
+
+def export_to_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="attendance.xls"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Attendance')
+
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Mã nhân viên', 'Tên nhân viên', 'Ngày', 'Giời']
+
+    for col_num, column_title in enumerate(columns):
+        ws.write(row_num, col_num, column_title, font_style)
+
+    font_style = xlwt.XFStyle()
+
+    attendances = Attendance.objects.all().values_list('emcode', 'name', 'date', 'time')
+    for row in attendances:
+        row_num += 1
+        for col_num, value in enumerate(row):
+            ws.write(row_num, col_num, value, font_style)
+
+    wb.save(response)
+    return response
 
 def ad_train(request):
     notify = request.GET.get('notify', None)

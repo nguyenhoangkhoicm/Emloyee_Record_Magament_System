@@ -1,0 +1,31 @@
+{% extends 'admin_base.html' %}
+
+{% block main%}
+<h3 style="text-align: center;">Bảng chấm công</h3>
+
+<div class="text-right mb-3">
+    <a href="{% url 'export_to_excel' %}" class="btn btn-primary">Xuất file Excel</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Mã nhân viên</th>
+            <th>Tên nhân viên</th>
+            <th>Ngày</th>
+            <th>Giờ</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for attendance in attendances %}
+        <tr>
+            <td>{{ attendance.emcode }}</td>
+            <td>{{ attendance.name }}</td>
+            <td>{{ attendance.date }}</td>
+            <td>{{ attendance.time }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
