@@ -206,7 +206,7 @@ def train(request):
 
 class Camera_feed_identified(object):
     def __init__(self):
-        self.video = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+        self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
         self.is_running = True
         (self.grabbed, self.frame) = self.video.read()
         self.recognized_records = {}
@@ -238,11 +238,14 @@ class Camera_feed_identified(object):
         _, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
     
-    def perform_attendance(self,emcode, name):
-        count= Attendance.objects.filter(date=datetime.date.today(),emcode=emcode).count()
+    def perform_attendance(self,empcode, name):
+        print('perform_attendance')
 
+        # #truy vấn tất cả các bản ghi trong bảng Attendance với điều kiện ( date = ngày hiện tại và emcode = mã nhân viên) rồi đếm số lượng bản ghi
+        count = Attendance.objects.filter(date=datetime.now().date(), emcode=empcode).count()
+        print(count)
         attendance = Attendance.objects.create(
-            emcode=emcode,
+            emcode=empcode,
             name=name,
             date=datetime.now().date(),
             time=datetime.now().time(),
