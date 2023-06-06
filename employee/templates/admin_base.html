@@ -77,6 +77,9 @@
                         <i class="fa fa-lock"></i> Đổi mật khẩu</a>
                     <a href="{% url 'ad_attendance' %}"
                         class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/ad_attendance/' %} active {% endif %}">
+                        <i class="fa fa-solid fa-book"></i> Nhật ký ra vào</a>
+                    <a href="{% url 'ad_showatt' %}"
+                        class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/ad_showatt/' %} active {% endif %}">
                         <i class="fa fa-check-circle"></i> Chấm công</a>
                     <a href="{% url 'logout' %}"
                         class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/logout/' %} active {% endif %}">

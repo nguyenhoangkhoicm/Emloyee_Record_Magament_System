@@ -10,6 +10,7 @@ from django.contrib import messages
 import subprocess
 from django.contrib.auth.models import User
 from employee.models import EmployeeDetail, Attendance
+
 import threading
 from django.shortcuts import redirect
 from datetime import datetime
@@ -238,11 +239,14 @@ class Camera_feed_identified(object):
         return jpeg.tobytes()
     
     def perform_attendance(self,emcode, name):
+        count= Attendance.objects.filter(date=datetime.date.today(),emcode=emcode).count()
+
         attendance = Attendance.objects.create(
             emcode=emcode,
             name=name,
             date=datetime.now().date(),
-            time=datetime.now().time()
+            time=datetime.now().time(),
+            counter=count+1
         )
         attendance.save()
 

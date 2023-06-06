@@ -311,7 +311,7 @@
                 function camera() {
                     cameraClicked = true;
                     const formData = new FormData(signupForm);
-                    const folderName = formData.get('firstname');
+                    const folderName = formData.get('empcode');
                     saveAccount();
                     if (folderName != null && folderName.trim() != "") {
                         fetch('/demorecognition/face_detection/?name=' + folderName)

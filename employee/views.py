@@ -4,12 +4,12 @@ from django.shortcuts import render, redirect
 from .models import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
+from collections import Counter
+from django.http import JsonResponse,HttpResponse
 
 import os
 import shutil
-from django.http import JsonResponse,HttpResponse
 import qrcode
-
 import json
 import datetime
 import xlwt
@@ -43,6 +43,11 @@ def ifter(request):
 def ad_attendance(request):
     attendances = Attendance.objects.all()
     return render(request, 'ad_attendance.html', {'attendances': attendances})
+
+
+def ad_showatt(request):
+    
+    return render(request, 'ad_showatt.html')
 
 
 def export_to_excel(request):

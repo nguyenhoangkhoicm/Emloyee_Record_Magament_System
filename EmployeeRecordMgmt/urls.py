@@ -49,4 +49,6 @@ urlpatterns = [
     path('identified/', identified, name='identified'),
     path('attendee_list/', attendee_list, name='attendee_list'),
     path('export-to-excel/', export_to_excel, name='export_to_excel'),
+    path('ad_showatt/', ad_showatt, name='ad_showatt'),
+   
 ]

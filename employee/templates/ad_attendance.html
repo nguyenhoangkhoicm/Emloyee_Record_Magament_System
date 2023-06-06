@@ -1,21 +1,16 @@
 {% extends 'admin_base.html' %}
 
 {% block main%}
-<h3 style="text-align: center;">Bảng chấm công</h3>
+<h3 style="text-align: center; ">Nhật ký ra vào</h3>
 
-<div class="text-right mb-3">
-    <a href="{% url 'export_to_excel' %}" class="btn btn-primary">Xuất file Excel</a>
-</div>
- 
-<table class="table table-striped">
+<table class="table table-striped" id="example" style="padding-top: 10px;">
     <thead>
         <tr>
             <th>Mã nhân viên</th>
             <th>Tên nhân viên</th>
             <th>Ngày</th>
             <th>Giờ</th>
-            <th>Trạng thái</th>
-            
+            <th>Trạng thái</th> 
         </tr>
     </thead>
     <tbody>
@@ -27,8 +22,16 @@
             <td>{{ attendance.name }}</td>
             <td>{{ attendance.date|date:"d/m/Y" }}</td>
             <td>{{ attendance.time|time:"H:i" }}</td>
+            <td>
+                {% if attendance.counter == 0 %}
+                <span class="text-success" title="Vào"><i class="bi bi-arrow-down-circle-fill"></i></span>
+            {% else %}
+                <span class="text-danger" title="Ra"><i class="bi bi-arrow-up-circle-fill"></i></span>
+            {% endif %}
+            </td>
         </tr>
         {% endfor %}
+
     </tbody>
 </table>
 
