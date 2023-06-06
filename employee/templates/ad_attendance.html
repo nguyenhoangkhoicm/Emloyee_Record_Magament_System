@@ -6,7 +6,7 @@
 <div class="text-right mb-3">
     <a href="{% url 'export_to_excel' %}" class="btn btn-primary">Xuất file Excel</a>
 </div>
-
+ 
 <table class="table table-striped">
     <thead>
         <tr>
@@ -14,15 +14,19 @@
             <th>Tên nhân viên</th>
             <th>Ngày</th>
             <th>Giờ</th>
+            <th>Trạng thái</th>
+            
         </tr>
     </thead>
     <tbody>
+        {% load tz %}
+        
         {% for attendance in attendances %}
         <tr>
             <td>{{ attendance.emcode }}</td>
             <td>{{ attendance.name }}</td>
-            <td>{{ attendance.date }}</td>
-            <td>{{ attendance.time }}</td>
+            <td>{{ attendance.date|date:"d/m/Y" }}</td>
+            <td>{{ attendance.time|time:"H:i" }}</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -3,18 +3,18 @@
 
 {% block content %}
 <style>
-  .image-container {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    height: 100%;
+ .image-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start; /* Sửa thành flex-start */
+  height: 100%;
+}
 
-  }
-
+ 
   #camera-image {
-    width: 800%;
+    width: 100%;
     /* Đặt chiều rộng khung camera */
-    height: 350px;
+    height: 500px;
     /* Đặt chiều cao khung camera */
     border: none;
     /* Xóa đường viền khung camera */
@@ -53,8 +53,6 @@
 
 {% csrf_token %}
 <div class="container">
-
-
   <div class="row">
     <div class="col-md-6 col-sm-12">
       <div class="card">
@@ -65,82 +63,76 @@
           <div class="image-container">
             <iframe id="camera-image" class="bordered-image" src="{% url 'identified' %}"></iframe>
           </div>
+          
+        </div>
+        <div class="text-center mt-3">
+          <button id="btn" class="btn btn-danger">
+            <i class="fa fa-stop"></i> Stop
+          </button>
         </div>
       </div>
-      <div class="text-center mt-3">
-
-        <button id="btn" class="btn btn-danger">
-
-          <i class="fa fa-stop"></i> Stop
-        </button>
-      </div>
-
     </div>
 
     <div class="col-md-6 col-sm-12">
       <div class="box box-info">
         <div class="box-header with-border">
-          <h6 class="box-title">Danh sách có mặt</h3>
+          <h6 class="box-title">Danh sách có mặt</h6>
         </div>
         <div class="box-body">
-          <ul id="user-list">
-
+          <ul id="user-list" class="list-group">
           </ul>
         </div>
       </div>
     </div>
   </div>
 </div>
-</div>
 
 <script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const attendeeListUl = document.getElementById('user-list');
+    const successAttendees = []; // Danh sách các tên đã điểm danh thành công
 
-document.addEventListener('DOMContentLoaded', function() {
-  const attendeeListUl = document.getElementById('user-list');
-  const successAttendees = []; // Danh sách các tên đã điểm danh thành công
+    // Cập nhật danh sách đại biểu mỗi 3 giây
+    intervalId = setInterval(() => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/attendee_list/');
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          const attendees = JSON.parse(xhr.responseText);
 
-  // Cập nhật danh sách đại biểu mỗi 3 giây
-  intervalId = setInterval(() => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/attendee_list/');
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        const attendees = JSON.parse(xhr.responseText);
+          attendeeListUl.innerHTML = '';
 
-        attendeeListUl.innerHTML = '';
+          for (let i = 0; i < attendees.length; i++) {
+            const li = document.createElement('li');
+            li.textContent = attendees[i];
+            li.classList.add('list-group-item');
+            attendeeListUl.appendChild(li);
 
-        for (let i = 0; i < attendees.length; i++) {
-          const li = document.createElement('li');
-          li.textContent = attendees[i];
-          attendeeListUl.appendChild(li);
+            // Kiểm tra xem tên đã điểm danh trước đó chưa
+            if (!successAttendees.includes(attendees[i])) {
+              successAttendees.push(attendees[i]); // Thêm tên vào danh sách đã điểm danh thành công
 
-          // Kiểm tra xem tên đã điểm danh trước đó chưa
-          if (!successAttendees.includes(attendees[i])) {
-            successAttendees.push(attendees[i]); // Thêm tên vào danh sách đã điểm danh thành công
-
-            // Hiển thị thông báo điểm danh thành công cho tên chưa điểm danh trước đó
-            Swal.fire({
-              icon: 'success',
-              title: 'Điểm danh thành công',
-              text: 'Điểm danh thành công: ' + attendees[i],
-              showConfirmButton: false,
-              timer: 1500 // Thời gian hiển thị thông báo (miligiay)
-            });
+              // Hiển thị thông báo điểm danh thành công cho tên chưa điểm danh trước đó
+              Swal.fire({
+                icon: 'success',
+                title: 'Điểm danh thành công',
+                text: 'Điểm danh thành công: ' + attendees[i],
+                showConfirmButton: false,
+                timer: 1500 // Thời gian hiển thị thông báo (miligiay)
+              });
+            }
           }
+        } else {
+          console.log('Không thể lấy danh sách đại biểu');
         }
-      } else {
-        console.log('Không thể lấy danh sách đại biểu');
-      }
-    };
-    xhr.onerror = function() {
-      alert('Kết nối bị ngắt. Dừng gửi yêu cầu tới server');
-      clearInterval(intervalId);
-    };
-    xhr.send();
-  }, 3000);
-});
-
-
+      };
+      xhr.onerror = function() {
+        alert('Kết nối bị ngắt. Dừng gửi yêu cầu tới server');
+        clearInterval(intervalId);
+      };
+      xhr.send();
+    }, 3000);
+  });
 
   // Lắng nghe sự kiện chuyển trang
   window.addEventListener('beforeunload', function (e) {
@@ -211,29 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-
-
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
-      if (xhr.status === 200) {
-        // Xử lý khi nhận được phản hồi thành công
-        console.log(xhr.responseText);
-
-        // Hiển thị thông báo flash thành công trên trang web
-        var messagesContainer = document.querySelector('.messages');
-        // var successMessage = document.createElement('li');
-        successMessage.classList.add('success');
-        // successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Stop thành công';
-        messagesContainer.appendChild(successMessage);
-      } else {
-        // Xử lý khi có lỗi xảy ra
-        console.error('Có lỗi xảy ra: ' + xhr.status);
-      }
-    }
-  };
-
-
-
   // Helper function to retrieve the CSRF token from the cookie
   function getCookie(name) {
     var cookieValue = null;
@@ -249,8 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     return cookieValue;
   }
-
-
 </script>
 
 {% endblock %}
