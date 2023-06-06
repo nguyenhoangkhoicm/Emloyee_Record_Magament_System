@@ -1,7 +1,7 @@
 {% extends 'admin_base.html' %}
 
 {% block main%}
-<h3 style="text-align: center; ">Nhật ký ra vào</h3>
+<h3 style="text-align: center;">Nhật ký ra vào</h3>
 
 <table class="table table-striped" id="example" style="padding-top: 10px;">
     <thead>
@@ -10,12 +10,10 @@
             <th>Tên nhân viên</th>
             <th>Ngày</th>
             <th>Giờ</th>
-            <th>Trạng thái</th> 
+            <th>Trạng thái</th>
         </tr>
     </thead>
     <tbody>
-        {% load tz %}
-        
         {% for attendance in attendances %}
         <tr>
             <td>{{ attendance.emcode }}</td>
@@ -23,15 +21,14 @@
             <td>{{ attendance.date|date:"d/m/Y" }}</td>
             <td>{{ attendance.time|time:"H:i" }}</td>
             <td>
-                {% if attendance.counter == 0 %}
-                <span class="text-success" title="Vào"><i class="bi bi-arrow-down-circle-fill"></i></span>
-            {% else %}
-                <span class="text-danger" title="Ra"><i class="bi bi-arrow-up-circle-fill"></i></span>
-            {% endif %}
+                {% if attendance.counter|divisibleby:2 %}
+                    <span class="text-danger" style="text-align: center;"><i class="fa fa-duotone fa-clipboard-list-check"></i> Ra</span>
+                {% else %}
+                    <span class="text-success" style="text-align: center;">Vào</span>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
-
     </tbody>
 </table>
 
