@@ -50,6 +50,6 @@ urlpatterns = [
     path('attendee_list/', attendee_list, name='attendee_list'),
     path('ad_showatt/', ad_showatt, name='ad_showatt'),
     path('download_excel/', download_excel, name='download_excel'),
-    
+    path('attendance/',query_time_attendance,name='run_attendance'),
    
 ]

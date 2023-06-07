@@ -4,18 +4,17 @@ from __future__ import print_function
 from django.http import HttpResponse
 import cv2
 import time
+from datetime import datetime, timedelta
 import os
 from . import FacialRecognition 
 from django.contrib import messages
 import subprocess
 from django.contrib.auth.models import User
 from employee.models import EmployeeDetail, Attendance
-
 import threading
 from django.shortcuts import redirect
-from datetime import datetime
 import unidecode
-import csv
+
 
 currentPythonFilePath = os.getcwd()
         
@@ -80,6 +79,112 @@ def face_recognition(request):
     cap.release()
     cv2.destroyAllWindows()
     return HttpResponse(name,barcodes)
+
+def find_attendance(code,date):
+
+    attendance = Attendance.objects.filter(emcode=code, date=date)
+    list_time_attendance = []
+    if attendance:
+        for att in attendance:
+            #chuẩn hóa ngày và giờ rồi chèn vào list
+            time_attendance = att.time.strftime("%H:%M:%S")
+            date_attendance = att.date.strftime("%d/%m/%Y")
+            #chèn vào list time_attendance và date_attendance một lượt
+            data = date_attendance+' '+time_attendance
+            list_time_attendance.append(data)
+
+    return list_time_attendance
+
+def tinh_thoi_gian_lam_viec(danh_sach_check_in_out):
+    so_lan_check_in = len(danh_sach_check_in_out) // 2
+    thoi_gian_ca_sang = timedelta()
+    thoi_gian_ca_chieu = timedelta()
+
+    for i in range(so_lan_check_in):
+        index_check_in = i * 2
+        index_check_out = index_check_in + 1
+
+        check_in = to_date_time(danh_sach_check_in_out[index_check_in])
+        check_out = to_date_time(danh_sach_check_in_out[index_check_out])
+
+        # Xác định thời điểm chia ca (12:00 PM)
+        ca_chia_ca = check_in.replace(hour=12, minute=0, second=0)
+
+        # Tính thời gian làm việc của ca sáng
+        if check_in < ca_chia_ca:
+            if check_out <= ca_chia_ca:
+                thoi_gian_ca_sang += check_out - check_in
+            else:
+                thoi_gian_ca_sang += ca_chia_ca - check_in
+
+        # Tính thời gian làm việc của ca chiều
+        if check_out >= ca_chia_ca:
+            if check_in >= ca_chia_ca:
+                thoi_gian_ca_chieu += check_out - check_in
+            else:
+                thoi_gian_ca_chieu += check_out - ca_chia_ca
+
+    return thoi_gian_ca_sang, thoi_gian_ca_chieu
+
+#hàm date range
+def daterange(start_date, end_date):
+    for n in range(int ((end_date - start_date).days)+1):
+        yield start_date + timedelta(n)
+
+def to_date_dmy(date):
+    return datetime.strptime(date, '%d/%m/%Y')
+
+def to_date_ymd(date):
+    return datetime.strptime(date, '%Y-%m-%d')
+
+def to_date_time(date):
+    return datetime.strptime(date, '%d/%m/%Y %H:%M:%S')
+
+def to_time(time):
+    return datetime.strptime(time, '%H:%M:%S').time()
+
+def calc_time(delta):
+    return delta.total_seconds() / 3600
+
+#truy vấn danh sách check in và check out của nhân viên theo ngày
+def query_attendance_all(startDate,endDate):
+    employees = EmployeeDetail.objects.all()
+    time_work = []
+    list_empcode = []
+    for employee in employees:
+        list_empcode.append(employee.emcode)
+    
+    for empcode in list_empcode:
+        for date in daterange(startDate,endDate):
+            ds=find_attendance(empcode,date)
+            sang,chieu=tinh_thoi_gian_lam_viec(ds)
+            print('empcode: ',empcode)
+            print('date: ',date.strftime("%d/%m/%Y"))
+            print('sang: ',sang.total_seconds() / 3600)
+            print('chieu: ',chieu.total_seconds() / 3600)
+
+            time_work.append([empcode,to_date_dmy(date),calc_time(sang),calc_time(chieu)])
+    return time_work
+
+def query_attendance_by_emcode(empcode,startDate,endDate):
+    time_work = []
+    for date in daterange(startDate,endDate):
+        ds=find_attendance(empcode,date)
+        sang,chieu=tinh_thoi_gian_lam_viec(ds)
+        time_work.append([empcode,to_date_dmy(date),calc_time(sang),calc_time(chieu)])
+    return time_work
+
+#hàm truy vấn giờ làm theo mã nhân viên và ngày
+def query_time_attendance(request):
+    #convert string to datetime
+    start = '2023-06-07'
+    end = '2023-06-09'
+    date_start = to_date_ymd(start)
+    date_end = to_date_ymd(end)
+    re =query_attendance_all(date_start,date_end)
+    print(re)
+    return HttpResponse(re)
+
 #hàm lấy ảnh từ video cách mỗi 10s 1 lần và lưu vào thư mục static, đọc video từ dường dẫn
 def get_frame(request,path_video):
     # Create named window
@@ -206,7 +311,7 @@ def train(request):
 
 class Camera_feed_identified(object):
     def __init__(self):
-        self.video = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+        self.video = cv2.VideoCapture(0, cv2.CAP_DSHOW)
         self.is_running = True
         (self.grabbed, self.frame) = self.video.read()
         self.recognized_records = {}
