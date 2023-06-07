@@ -149,11 +149,11 @@ def calc_time(delta):
 #truy vấn danh sách check in và check out của nhân viên theo ngày
 def query_attendance_all(startDate,endDate):
     employees = EmployeeDetail.objects.all()
-    time_work = []
+    
     list_empcode = []
     for employee in employees:
         list_empcode.append(employee.emcode)
-    
+    time_work = []
     for empcode in list_empcode:
         for date in daterange(startDate,endDate):
             ds=find_attendance(empcode,date)
@@ -163,7 +163,7 @@ def query_attendance_all(startDate,endDate):
             print('sang: ',sang.total_seconds() / 3600)
             print('chieu: ',chieu.total_seconds() / 3600)
 
-            time_work.append([empcode,to_date_dmy(date),calc_time(sang),calc_time(chieu)])
+            time_work.append([empcode,date.strftime("%d/%m/%Y"),calc_time(sang),calc_time(chieu)])
     return time_work
 
 def query_attendance_by_emcode(empcode,startDate,endDate):
@@ -171,7 +171,7 @@ def query_attendance_by_emcode(empcode,startDate,endDate):
     for date in daterange(startDate,endDate):
         ds=find_attendance(empcode,date)
         sang,chieu=tinh_thoi_gian_lam_viec(ds)
-        time_work.append([empcode,to_date_dmy(date),calc_time(sang),calc_time(chieu)])
+        time_work.append([empcode,date.strftime("%d/%m/%Y"),calc_time(sang),calc_time(chieu)])
     return time_work
 
 #hàm truy vấn giờ làm theo mã nhân viên và ngày
