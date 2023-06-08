@@ -19,37 +19,31 @@ def load(request):
     return render(request, 'loading.html')
 
 def index(request):
-    attendance = Attendance.objects.filter(date=datetime.date.today())
-    name_list = []
-    for i in attendance:
-        name_list.append(i.name)
-
-    context = {'name_list': name_list}
-    return render(request, 'index.html', context)
+   
+    return render(request, 'index.html')
 
 def attendee_list(request):
     attendance = Attendance.objects.filter(date=datetime.date.today())
     name_list = []
     for i in attendance:
         name_list.append(i.name)
+    
     return HttpResponse(json.dumps(name_list), content_type='application/json')
-
 
 def ifter(request):
     return render(request, 'interface.html')
-
 
 def ad_attendance(request):
     attendances = Attendance.objects.all()
     return render(request, 'ad_attendance.html', {'attendances': attendances})
 
 def download_excel(request):
-    file_path = os.path.join(settings.BASE_DIR, 'cc.xlsx')  # Đường dẫn tới file Excel 
+    file_path = os.path.join(settings.BASE_DIR, './attendance.xlsx')  # Đường dẫn tới file Excel 
     
     if os.path.exists(file_path):
         with open(file_path, 'rb') as excel_file:
             response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            response['Content-Disposition'] = 'attachment; filename="cc.xlsx"'
+            response['Content-Disposition'] = 'attachment; filename="attendance.xlsx"'
             return response
     else:
         return HttpResponse("File not found.")
@@ -57,7 +51,7 @@ def download_excel(request):
 
 def ad_showatt(request):
     # Đường dẫn đến tệp Excel
-    excel_file = './cc.xlsx'
+    excel_file = './attendance.xlsx'
     
     # Đọc tệp Excel và chuyển đổi thành HTML
     df = pd.read_excel(excel_file)
