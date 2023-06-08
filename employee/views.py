@@ -50,29 +50,26 @@ def download_excel(request):
 
 
 # def ad_showatt(request):
-#     # Đường dẫn đến tệp Excel
-#     excel_file = './attendance.xlsx'
+    # # Đường dẫn đến tệp Excel
+    # excel_file = './attendance.xlsx'
     
-#     # Đọc tệp Excel và chuyển đổi thành HTML
-#     df = pd.read_excel(excel_file)
-#     html_table = df.to_html()
+    # # Đọc tệp Excel và chuyển đổi thành HTML
+    # df = pd.read_excel(excel_file)
+    # df.fillna('', inplace=True)
+    # html_table = df.to_html()
     
-#     # Truyền HTML vào template
-#     context = {'html_table': html_table}
+    # # Truyền HTML vào template
+    # context = {'html_table': html_table}
    
-#     return render(request, 'ad_showatt.html',context)
+    # return render(request, 'ad_showatt.html',context)
 def ad_showatt(request):
     # Đường dẫn đến tệp Excel
     excel_file = './attendance.xlsx'
     
-    # Đọc tệp Excel và chuyển đổi thành DataFrame
+    # Đọc tệp Excel và chuyển đổi thành HTML
     df = pd.read_excel(excel_file)
-    
-    # Lấy tiêu đề từ DataFrame
-    headers = list(df.columns)
-    
-    # Đọc tệp Excel và chuyển đổi thành HTML với tiêu đề
-    html_table = df.to_html(header=headers, index=False)
+    df.fillna('', inplace=True)
+    html_table = df.to_html(classes='table table-striped table-bordered')
     
     # Truyền HTML vào template
     context = {'html_table': html_table}

@@ -9,12 +9,13 @@ import os
 from . import FacialRecognition 
 from django.contrib import messages
 import subprocess
-from django.contrib.auth.models import User
 from employee.models import EmployeeDetail, Attendance
 import threading
-from django.shortcuts import redirect
 import unidecode
-
+from django.http import HttpResponse
+import json,pandas
+import openpyxl
+from openpyxl.styles import Alignment
 
 currentPythonFilePath = os.getcwd()
         
@@ -146,73 +147,25 @@ def to_time(time):
 def calc_time(delta):
     return delta.total_seconds() / 3600
 
-#truy vấn danh sách check in và check out của nhân viên theo ngày
-# def query_attendance_all(startDate,endDate):
-#     employees = EmployeeDetail.objects.all()
-    
-#     list_empcode = []
-#     for employee in employees:
-#         list_empcode.append(employee.emcode)
-#     time_work = []
-#     for empcode in list_empcode:
-#         for date in daterange(startDate,endDate):
-#             ds=find_attendance(empcode,date)
-#             sang,chieu=tinh_thoi_gian_lam_viec(ds)
-#             print('empcode: ',empcode)
-#             print('date: ',date.strftime("%d/%m/%Y"))
-#             print('sang: ',sang.total_seconds() / 3600)
-#             print('chieu: ',chieu.total_seconds() / 3600)
-#             time_work.append([empcode,date.strftime("%d/%m/%Y"),calc_time(sang),calc_time(chieu)])
-#     print(time_work)
-#     return time_work
+
 def query_attendance_all(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         start_date = datetime.strptime(data['start_date'], "%Y-%m-%d").date()
         end_date = datetime.strptime(data['end_date'], "%Y-%m-%d").date()
         
-        # # Xử lý logic để truy vấn và tính toán dữ liệu thời gian
-        
-        # time_work = []  # Danh sách kết quả
-        
-        # employees = EmployeeDetail.objects.all()
-        
-        # for employee in employees:
-        #     # Thực hiện xử lý cho từng nhân viên và ngày trong khoảng thời gian
-        #     empcode = employee.emcode
-        #     name = Attendance.objects.filter(emcode=empcode).values('name').first()['name']
-        #     for date in daterange(start_date, end_date):
-        #         ds = find_attendance(empcode,date)
-        #         sang, chieu = tinh_thoi_gian_lam_viec(ds)
-                
-        #         # Tạo một bản ghi thời gian làm việc và thêm vào danh sách kết quả
-        #         time_record = {
-        #             'Ma nhan vien': empcode,
-        #             'Ten nhan vien':name,
-        #             'Ngay thang': date.strftime("%d/%m/%Y"),
-        #             'sang': sang.total_seconds() / 3600,
-        #             'chieu': chieu.total_seconds() / 3600
-        #         }
-        #         time_work.append(time_record)
-        # print(time_work)
-        # # Tạo DataFrame từ danh sách time_work
-        # df = pandas.DataFrame(time_work)
-
-        # # Kiểm tra và xác định giá trị của cột 'sang' và 'chieu'
-        # df['total_hours'] = df['sang'] + df['chieu']  # Tổng thời gian làm việc buổi sáng và buổi chiều
-        # df['Cham cong'] = df['total_hours'].apply(lambda x: 'x' if x >= 8 else ('x/2' if x >= 4 else 'o'))
-
-        # # Loại bỏ cột 'total_hours' nếu không cần thiết
-        # df.drop(['sang', 'chieu', 'total_hours'], axis=1, inplace=True)
-
-        # # Lưu DataFrame vào file Excel
-        # df.to_excel('attendance.xlsx', index=False)
         employees = EmployeeDetail.objects.all()
         time_work = []
 
         for employee in employees:
             empcode = employee.emcode
             name = Attendance.objects.filter(emcode=empcode).values('name').first()['name']
+            
+            time_record = {
+                'MNV': empcode,
+                'TÊN': name
+            }
+            
             for date in daterange(start_date, end_date):
                 ds = find_attendance(empcode, date)
                 sang, chieu = tinh_thoi_gian_lam_viec(ds)
@@ -225,19 +178,17 @@ def query_attendance_all(request):
                 else:
                     mark = ''
 
-                time_record = {
-                    'MNV': empcode,
-                    'TÊN': name,
-                    date.strftime("%d/%m/%Y"): mark
-                }
-                time_work.append(time_record)
+                time_record[date.strftime("%d/%m/%Y")] = mark
 
-        df = pandas.DataFrame(time_work)
-        df.set_index(['MNV', 'TÊN'], inplace=True)
+            time_work.append(time_record)
+
+        df = pd.DataFrame(time_work)
+        df.set_index(['MNV','TÊN'], inplace=True)
+        df = df.style.set_properties(**{'text-align': 'center'})
 
         # Ghi DataFrame vào file Excel
         filename = 'attendance.xlsx'
-        writer = pandas.ExcelWriter(filename, engine='openpyxl')
+        writer = pd.ExcelWriter(filename, engine='openpyxl')
         df.to_excel(writer, sheet_name='Sheet1')
 
         # Mở workbook và worksheet
@@ -255,11 +206,8 @@ def query_attendance_all(request):
 
         # Trả về danh sách kết quả dưới dạng JSON
         return HttpResponse(json.dumps(time_work), content_type='application/json')
-    
-from django.http import HttpResponse
-import json,pandas
-import openpyxl
-from openpyxl.styles import Alignment
+import pandas as pd  
+
 def query_attendance_by_emcode(empcode,startDate,endDate):
     time_work = []
     for date in daterange(startDate,endDate):
