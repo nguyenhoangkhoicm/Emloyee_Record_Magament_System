@@ -3,26 +3,29 @@
 
 
 
-
+<h2 style="text-align: center; color: chocolate;"> Bảng chấm công</h2>
 <div class="row">
-  <div class="col-md-4">
-    <a href="{% url 'download_excel' %}" class="btn btn-primary "><i class="fa fa-file-download"></i> Tải file Excel</a>
+  <div class="col-md-6">
+    <div class="m-4">
+    <a href="{% url 'download_excel' %}" class="btn btn-primary"><i class="fa fa-file-download"></i> Tải file Excel</a>
+  </div>
   </div>
 
-  <div class="row">
-   
-    <div class="col-md-6 text-left">
-      Từ ngày
-      <input type="date" name="start_date" id="start_date" class="form-control" required>
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-6 text-left">
+        Từ ngày
+        <input type="date" name="start_date" id="start_date" class="form-control" required>
+      </div>
+    
+      <div class="col-md-6 text-left">
+        Đến ngày
+        <input type="date" name="end_date" id="end_date" class="form-control" required>
+      </div>
     </div>
-  
-    <div class="col-md-6 text-left">
-      Đến ngày
-      <input type="date" name="end_date" id="end_date" class="form-control" required>
-    </div>
-
   </div>
 </div>
+
 <div class="m-3" id="iframe-container" style="display: flex; justify-content: center; align-items: center; height: 100%;">
   <iframe srcdoc='
     <html>
