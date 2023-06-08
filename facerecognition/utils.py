@@ -171,49 +171,95 @@ def query_attendance_all(request):
         start_date = datetime.strptime(data['start_date'], "%Y-%m-%d").date()
         end_date = datetime.strptime(data['end_date'], "%Y-%m-%d").date()
         
-        # Xử lý logic để truy vấn và tính toán dữ liệu thời gian
+        # # Xử lý logic để truy vấn và tính toán dữ liệu thời gian
         
-        time_work = []  # Danh sách kết quả
+        # time_work = []  # Danh sách kết quả
         
+        # employees = EmployeeDetail.objects.all()
+        
+        # for employee in employees:
+        #     # Thực hiện xử lý cho từng nhân viên và ngày trong khoảng thời gian
+        #     empcode = employee.emcode
+        #     name = Attendance.objects.filter(emcode=empcode).values('name').first()['name']
+        #     for date in daterange(start_date, end_date):
+        #         ds = find_attendance(empcode,date)
+        #         sang, chieu = tinh_thoi_gian_lam_viec(ds)
+                
+        #         # Tạo một bản ghi thời gian làm việc và thêm vào danh sách kết quả
+        #         time_record = {
+        #             'Ma nhan vien': empcode,
+        #             'Ten nhan vien':name,
+        #             'Ngay thang': date.strftime("%d/%m/%Y"),
+        #             'sang': sang.total_seconds() / 3600,
+        #             'chieu': chieu.total_seconds() / 3600
+        #         }
+        #         time_work.append(time_record)
+        # print(time_work)
+        # # Tạo DataFrame từ danh sách time_work
+        # df = pandas.DataFrame(time_work)
+
+        # # Kiểm tra và xác định giá trị của cột 'sang' và 'chieu'
+        # df['total_hours'] = df['sang'] + df['chieu']  # Tổng thời gian làm việc buổi sáng và buổi chiều
+        # df['Cham cong'] = df['total_hours'].apply(lambda x: 'x' if x >= 8 else ('x/2' if x >= 4 else 'o'))
+
+        # # Loại bỏ cột 'total_hours' nếu không cần thiết
+        # df.drop(['sang', 'chieu', 'total_hours'], axis=1, inplace=True)
+
+        # # Lưu DataFrame vào file Excel
+        # df.to_excel('attendance.xlsx', index=False)
         employees = EmployeeDetail.objects.all()
-        
+        time_work = []
+
         for employee in employees:
-            # Thực hiện xử lý cho từng nhân viên và ngày trong khoảng thời gian
             empcode = employee.emcode
             name = Attendance.objects.filter(emcode=empcode).values('name').first()['name']
             for date in daterange(start_date, end_date):
-                ds = find_attendance(empcode,date)
+                ds = find_attendance(empcode, date)
                 sang, chieu = tinh_thoi_gian_lam_viec(ds)
-                
-                # Tạo một bản ghi thời gian làm việc và thêm vào danh sách kết quả
+
+                total_hours = (sang + chieu).total_seconds() / 3600
+                if total_hours >= 8:
+                    mark = 'x'
+                elif total_hours >= 4:
+                    mark = 'x/2'
+                else:
+                    mark = ''
+
                 time_record = {
-                    'Ma nhan vien': empcode,
-                    'Ten nhan vien':name,
-                    'Ngay thang': date.strftime("%d/%m/%Y"),
-                    'sang': sang.total_seconds() / 3600,
-                    'chieu': chieu.total_seconds() / 3600
+                    'MNV': empcode,
+                    'TÊN': name,
+                    date.strftime("%d/%m/%Y"): mark
                 }
                 time_work.append(time_record)
-        print(time_work)
-        # Tạo DataFrame từ danh sách time_work
+
         df = pandas.DataFrame(time_work)
+        df.set_index(['MNV', 'TÊN'], inplace=True)
 
-        # Kiểm tra và xác định giá trị của cột 'sang' và 'chieu'
-        df['total_hours'] = df['sang'] + df['chieu']  # Tổng thời gian làm việc buổi sáng và buổi chiều
-        df['attendance'] = df['total_hours'].apply(lambda x: 'x' if x >= 8 else ('x/2' if x >= 4 else 'o'))
+        # Ghi DataFrame vào file Excel
+        filename = 'attendance.xlsx'
+        writer = pandas.ExcelWriter(filename, engine='openpyxl')
+        df.to_excel(writer, sheet_name='Sheet1')
 
-        # Loại bỏ cột 'total_hours' nếu không cần thiết
-        df.drop(['sang', 'chieu', 'total_hours'], axis=1, inplace=True)
+        # Mở workbook và worksheet
+        workbook = writer.book
+        worksheet = writer.sheets['Sheet1']
 
-        # Lưu DataFrame vào file Excel
-        df.to_excel('attendance.xlsx', index=False)
+        # Định dạng ngày tháng và đánh dấu 'x' hoặc 'x/2'
+        for column in worksheet.iter_cols(min_row=2, max_row=2, min_col=3):
+            for cell in column:
+                cell.alignment = Alignment(horizontal='center')
+                cell.font = openpyxl.styles.Font(bold=True)
+
+        # Lưu workbook
+        workbook.save(filename)
 
         # Trả về danh sách kết quả dưới dạng JSON
         return HttpResponse(json.dumps(time_work), content_type='application/json')
     
 from django.http import HttpResponse
 import json,pandas
-
+import openpyxl
+from openpyxl.styles import Alignment
 def query_attendance_by_emcode(empcode,startDate,endDate):
     time_work = []
     for date in daterange(startDate,endDate):

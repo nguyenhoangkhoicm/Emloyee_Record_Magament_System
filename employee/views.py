@@ -49,18 +49,35 @@ def download_excel(request):
         return HttpResponse("File not found.")
 
 
+# def ad_showatt(request):
+#     # Đường dẫn đến tệp Excel
+#     excel_file = './attendance.xlsx'
+    
+#     # Đọc tệp Excel và chuyển đổi thành HTML
+#     df = pd.read_excel(excel_file)
+#     html_table = df.to_html()
+    
+#     # Truyền HTML vào template
+#     context = {'html_table': html_table}
+   
+#     return render(request, 'ad_showatt.html',context)
 def ad_showatt(request):
     # Đường dẫn đến tệp Excel
     excel_file = './attendance.xlsx'
     
-    # Đọc tệp Excel và chuyển đổi thành HTML
+    # Đọc tệp Excel và chuyển đổi thành DataFrame
     df = pd.read_excel(excel_file)
-    html_table = df.to_html()
+    
+    # Lấy tiêu đề từ DataFrame
+    headers = list(df.columns)
+    
+    # Đọc tệp Excel và chuyển đổi thành HTML với tiêu đề
+    html_table = df.to_html(header=headers, index=False)
     
     # Truyền HTML vào template
     context = {'html_table': html_table}
    
-    return render(request, 'ad_showatt.html',context)
+    return render(request, 'ad_showatt.html', context)
 
 
 def ad_train(request):
