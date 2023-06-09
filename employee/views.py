@@ -48,20 +48,6 @@ def download_excel(request):
     else:
         return HttpResponse("File not found.")
 
-
-# def ad_showatt(request):
-    # # Đường dẫn đến tệp Excel
-    # excel_file = './attendance.xlsx'
-    
-    # # Đọc tệp Excel và chuyển đổi thành HTML
-    # df = pd.read_excel(excel_file)
-    # df.fillna('', inplace=True)
-    # html_table = df.to_html()
-    
-    # # Truyền HTML vào template
-    # context = {'html_table': html_table}
-   
-    # return render(request, 'ad_showatt.html',context)
 def ad_showatt(request):
     # Đường dẫn đến tệp Excel
     excel_file = './attendance.xlsx'
@@ -99,7 +85,7 @@ def timetrain(request):
     # Gửi train_datetimes đến template dưới dạng JSON
     data = {'train_datetimes': train_datetimes}
     return JsonResponse(data)
-
+ 
 # hàm tạo qr code
 def create_qrcode(text):
     # Tạo đối tượng QR code
@@ -109,7 +95,6 @@ def create_qrcode(text):
         box_size=10,
         border=4,
     )
-
     # Thêm dữ liệu vào QR code
     qr.add_data(text)
     qr.make(fit=True)
@@ -119,6 +104,10 @@ def create_qrcode(text):
 
     # Lưu ảnh QR code thành file tại thư mục 'static/images/qrcode'
     save_path = os.path.join('static/images/qrcode', f'{text}.png')
+    save_path = save_path.replace('\\', '/')  # Thay thế ký tự '\' bằng '/'
+    file_path = os.path.join(settings.BASE_DIR, 'qrcode_path.txt')
+    with open(file_path, 'w') as file:
+        file.write('/'.join(save_path.split('/')[3:]))  # Ghi đường dẫn sau từ khóa "static" vào file
     qr_image.save(save_path)
 
     return save_path
@@ -150,8 +139,11 @@ def upload_images(request):
 
 
 def ad_registration(request):
-
-    return render(request, 'admin_rg.html', locals())
+    qrcode_path = []
+    # Đọc nội dung của tệp tin txt
+    with open('qrcode_path.txt', 'r') as file:
+        content = [line.strip() for line in file]
+    return render(request, 'admin_rg.html', {'content': content})
 
 
 def save_registration(request):

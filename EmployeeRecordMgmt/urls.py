@@ -49,6 +49,7 @@ urlpatterns = [
     path('identified/', identified, name='identified'),
     path('attendee_list/', attendee_list, name='attendee_list'),
     path('ad_showatt/', ad_showatt, name='ad_showatt'),
+  
     path('download_excel/', download_excel, name='download_excel'),
     path('attendance/',query_time_attendance,name='run_attendance'),
     path('query_attendance_all/',query_attendance_all,name='query_attendance_all'),
