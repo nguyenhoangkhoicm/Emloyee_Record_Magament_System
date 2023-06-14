@@ -21,3 +21,14 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"Attendance for {self.name} ({self.emcode})"
+
+
+# bảng nghỉ phép
+class Leave(models.Model):
+    emcode = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
+    #lý do nghỉ phép
+    reason = models.CharField(max_length=1000)
+    date = models.DateField()
+    def __str__(self):
+        return f"Leave for {self.name} ({self.emcode})"
