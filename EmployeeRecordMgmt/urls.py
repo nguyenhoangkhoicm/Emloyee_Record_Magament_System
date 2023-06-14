@@ -53,6 +53,7 @@ urlpatterns = [
     path('download_excel/', download_excel, name='download_excel'),
     path('attendance/',query_time_attendance,name='run_attendance'),
     path('query_attendance_all/',query_attendance_all,name='query_attendance_all'),
+    path('leave/',leave,name='leave'),
 
    
 ]

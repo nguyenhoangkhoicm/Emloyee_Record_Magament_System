@@ -1,0 +1,91 @@
+{% extends 'admin_base.html' %}
+{% block main %}
+
+
+<h3 style="text-align: center;">Nhật ký nghỉ phép</h3>
+
+<div class="row">
+    <div class="box-header with-border m-3" style="display: inline-block; float: left;">
+        <a href="#addnew" data-toggle="modal" class="btn btn-success btn-sm btn-flat"><i class="fa fa-plus"></i> Thêm mới</a>
+      </div>
+</div>
+<table class="table table-striped" id="example" style="padding-top: 10px;">
+
+    <thead>
+        <tr>
+            <th>Mã nhân viên</th>
+            <th>Tên nhân viên</th>
+            <th>Ngày</th>
+            <th>Lí do</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for leave in leaves %}
+        <tr>
+            <td>{{ leave.emcode }}</td>
+            <td>{{ leave.name }}</td>
+            <td>{{ leave.date|date:"d/m/Y" }}</td>
+            <td>{{ leave.reason }}</td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% endblock %}
+{% block modal %}
+<div class="modal fade" id="addnew">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title"><b>Thêm đơn nghỉ phép</b></h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" method="POST" action="{% url 'leave' %}">
+              {% csrf_token %}
+
+             
+              <div class="form-row">
+
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Mã nhân viên</label>
+                        <input type="text" name="empcode" class="form-control" id="empcode-input"
+                            placeholder="Nhập mã nhân viên" pattern="[0-9]+" required>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Tên</label>
+                            <input type="text" name="name" class="form-control" placeholder="Nhập tên"
+                                required>
+                        </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                          <label>Ngày Nghỉ Phép</label>
+                          <input type="date" name="date" id="date" class="form-control" required>
+                        
+                    </div>    
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Lí Do</label>
+                        <input type="text" name="reason" class="form-control" placeholder="Nhập lí do" required>
+                    </div>
+                </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Đóng</button>
+            <button type="submit" class="btn btn-success btn-flat" name="add"><i class="fa fa-save"></i> Lưu</button>
+          </div></form></div></div></div></div>
+{% endblock modal %}

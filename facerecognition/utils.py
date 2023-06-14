@@ -9,7 +9,7 @@ import os
 from . import FacialRecognition 
 from django.contrib import messages
 import subprocess
-from employee.models import EmployeeDetail, Attendance
+from employee.models import EmployeeDetail, Attendance, Leave
 import threading
 import unidecode
 from django.http import HttpResponse
@@ -159,8 +159,9 @@ def query_attendance_all(request):
 
         for employee in employees:
             empcode = employee.emcode
-            name = Attendance.objects.filter(emcode=empcode).values('name').first()['name']
-            
+            print('code',empcode)
+            name = employee.user.last_name + '' + employee.user.first_name
+            print('name',name)
             time_record = {
                 'MNV': empcode,
                 'TÊN': name
@@ -172,15 +173,22 @@ def query_attendance_all(request):
 
                 total_hours = (sang + chieu).total_seconds() / 3600
                 if total_hours >= 8:
-                    mark = 'x'
+                    mark = 'X'
                 elif total_hours >= 4:
-                    mark = 'x/2'
+                    mark = 'X/2'
                 else:
-                    mark = ''
+                    leave = Leave.objects.filter(emcode=empcode, date=date).first()
+                    print(leave)
+                    if leave is not None:
+                        mark = 'P'
+                    else:
+                        mark = 'KP'
+
 
                 time_record[date.strftime("%d/%m/%Y")] = mark
 
             time_work.append(time_record)
+
 
         df = pd.DataFrame(time_work)
         df.set_index(['MNV','TÊN'], inplace=True)
@@ -196,7 +204,7 @@ def query_attendance_all(request):
         worksheet = writer.sheets['Sheet1']
 
         # Định dạng ngày tháng và đánh dấu 'x' hoặc 'x/2'
-        for column in worksheet.iter_cols(min_row=2, max_row=2, min_col=3):
+        for column in worksheet.iter_cols(min_row=1, max_row=1, min_col=3):
             for cell in column:
                 cell.alignment = Alignment(horizontal='center')
                 cell.font = openpyxl.styles.Font(bold=True)

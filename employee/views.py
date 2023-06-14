@@ -22,6 +22,20 @@ def index(request):
    
     return render(request, 'index.html')
 
+def leave(request):
+    if request.method == 'POST':
+        empcode = request.POST['empcode']
+        name = request.POST['name']
+        reason = request.POST['reason']
+        date = request.POST['date']
+        leave = Leave(emcode = empcode, name=name, reason=reason, date=date)
+        leave.save()
+        messages.success(request, 'Bạn đã gửi đơn xin nghỉ thành công.')
+        return redirect('leave')
+    else:
+        leave = Leave.objects.all()
+        return render(request, 'leave.html', {'leaves': leave})
+
 def attendee_list(request):
     attendance = Attendance.objects.filter(date=datetime.date.today())
     name_list = []
